@@ -1,130 +1,72 @@
-// Configuración de Supabase
+// auth.js - VERSIÓN SUPER SIMPLE SIN SUPABASE JS
 const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB';
 
-let supabase;
-
-// Inicializar Supabase - VERSIÓN CORREGIDA
-async function initSupabase() {
-    try {
-        // Cargar Supabase desde CDN con import dinámico
-        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
-        
-        // Crear cliente
-        supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
-            auth: {
-                persistSession: false,
-                autoRefreshToken: false
-            }
-        });
-        
-        console.log('✅ Supabase inicializado correctamente');
-        
-        // Verificar conexión
-        const { data, error } = await supabase.from('usuarios').select('count').limit(1);
-        if (error) {
-            console.warn('⚠️ Supabase conectado, pero error en tabla:', error.message);
-        } else {
-            console.log('✅ Conexión a Supabase verificada');
-        }
-        
-        // Verificar si hay usuario logueado
-        await checkAuth();
-        
-    } catch (error) {
-        console.error('❌ Error inicializando Supabase:', error);
-    }
-}
-
-// Verificar autenticación
-async function checkAuth() {
-    const user = getCurrentUser();
-    
-    if (user) {
-        // Mostrar botones de admin y logout
-        const adminLink = document.getElementById('adminLink');
-        const logoutBtn = document.getElementById('logoutBtn');
-        const loginBtn = document.querySelector('.btn-login');
-        
-        if (adminLink) {
-            adminLink.style.display = 'flex';
-            if (user.rol === 'ADMINISTRADOR') {
-                adminLink.href = 'admin/dashboard.html';
-            } else if (user.rol === 'OPERADOR') {
-                adminLink.href = 'admin/dashboard.html';
-                adminLink.innerHTML = '<i class="fas fa-cog"></i> Operador';
-            } else if (user.rol === 'MAYORISTA') {
-                adminLink.href = 'admin/dashboard.html';
-                adminLink.innerHTML = '<i class="fas fa-cog"></i> Mayorista';
-            }
-        }
-        
-        if (logoutBtn) {
-            logoutBtn.style.display = 'flex';
-        }
-        
-        if (loginBtn) {
-            loginBtn.style.display = 'none';
-        }
-    }
-}
-
-// Manejar login - VERSIÓN SIMPLIFICADA
+// Login DIRECTO con Fetch API (más simple)
 async function handleLogin(email, password, role) {
     try {
-        console.log('Intentando login con:', { email, role });
+        console.log('Login attempt:', { email, role });
         
-        // Verificar que supabase esté inicializado
-        if (!supabase) {
-            throw new Error('Supabase no está inicializado');
+        // Consulta DIRECTA a la tabla usuarios
+        const response = await fetch(
+            `${SUPABASE_URL}/rest/v1/usuarios?email=eq.${email}&password=eq.${password}&rol=eq.${role}`,
+            {
+                method: 'GET',
+                headers: {
+                    'apikey': SUPABASE_KEY,
+                    'Authorization': `Bearer ${SUPABASE_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('HTTP Error:', errorText);
+            throw new Error(`Error ${response.status}: ${errorText}`);
         }
         
-        // Verificar credenciales directamente
-        const { data: user, error } = await supabase
-            .from('usuarios')
-            .select('*')
-            .eq('email', email)
-            .eq('password', password)
-            .eq('rol', role)
-            .single();
-
-        if (error) {
-            console.error('Error Supabase:', error);
-            throw new Error('Error de conexión con la base de datos');
-        }
+        const users = await response.json();
+        console.log('Users found:', users);
         
-        if (!user) {
+        if (!users || users.length === 0) {
             throw new Error('Credenciales incorrectas');
         }
-
-        // Guardar usuario en localStorage
+        
+        const user = users[0];
+        
+        // Guardar en localStorage (texto plano, sin seguridad)
         localStorage.setItem('currentUser', JSON.stringify({
             id: user.id,
             email: user.email,
             rol: user.rol,
+            nombre: user.nombre,
             loggedIn: true
         }));
-
-        // Redirigir
+        
+        // Redirigir según rol
         if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
             window.location.href = 'admin/dashboard.html';
         } else {
             window.location.href = 'index.html';
         }
-
+        
         return { success: true };
+        
     } catch (error) {
-        console.error('Error en login:', error);
+        console.error('Login error details:', error);
         return { 
             success: false, 
-            message: error.message === 'Credenciales incorrectas' 
+            message: error.message.includes('Credenciales') 
                 ? 'Credenciales incorrectas' 
-                : 'Error en el servidor. Intenta nuevamente.' 
+                : 'Error: ' + error.message 
         };
     }
 }
 
-// Manejar logout
+// Logout simple
 function handleLogout() {
     localStorage.removeItem('currentUser');
     window.location.href = 'index.html';
@@ -136,24 +78,42 @@ function getCurrentUser() {
     return userStr ? JSON.parse(userStr) : null;
 }
 
-// Inicializar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM cargado, inicializando...');
+// Mostrar/ocultar elementos según login
+function updateUIForUser() {
+    const user = getCurrentUser();
+    const adminLink = document.getElementById('adminLink');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginBtn = document.querySelector('.btn-login');
     
-    // Inicializar Supabase
-    initSupabase();
+    if (user && user.loggedIn) {
+        if (adminLink) {
+            adminLink.style.display = 'flex';
+            adminLink.href = 'admin/dashboard.html';
+            adminLink.innerHTML = `<i class="fas fa-cog"></i> ${user.rol}`;
+        }
+        if (logoutBtn) logoutBtn.style.display = 'flex';
+        if (loginBtn) loginBtn.style.display = 'none';
+    }
+}
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Auth.js loaded');
+    
+    // Actualizar UI
+    updateUIForUser();
     
     // Manejar formulario de login
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const role = document.getElementById('role').value;
             
-            const loginBtn = loginForm.querySelector('.btn-login-submit');
+            const loginBtn = this.querySelector('.btn-login-submit');
             const originalText = loginBtn.innerHTML;
             loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
             loginBtn.disabled = true;
@@ -163,10 +123,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const messageDiv = document.getElementById('loginMessage');
             if (result.success) {
                 messageDiv.className = 'message success';
-                messageDiv.textContent = '¡Inicio de sesión exitoso! Redirigiendo...';
+                messageDiv.textContent = '¡Login exitoso! Redirigiendo...';
             } else {
                 messageDiv.className = 'message error';
-                messageDiv.textContent = result.message || 'Error en el inicio de sesión';
+                messageDiv.textContent = result.message;
                 loginBtn.innerHTML = originalText;
                 loginBtn.disabled = false;
             }
@@ -176,17 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Manejar logout
     const logoutBtn = document.getElementById('logoutBtn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
+        logoutBtn.addEventListener('click', function(e) {
             e.preventDefault();
             handleLogout();
         });
     }
     
-    // Verificar permisos en páginas de admin
+    // Proteger páginas admin
     if (window.location.pathname.includes('admin')) {
         const user = getCurrentUser();
         if (!user || !user.loggedIn) {
-            window.location.href = '../login.html';
+            window.location.href = 'login.html';
         }
     }
 });
