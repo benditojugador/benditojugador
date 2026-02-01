@@ -1,152 +1,182 @@
-// auth.js - VERSIÓN SUPER SIMPLE SIN SUPABASE JS
-const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB';
+// auth.js - CON SUPABASE JS V2
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-// Login DIRECTO con Fetch API (más simple)
+// Configuración
+const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
+
+// Crear cliente Supabase
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+
+console.log('✅ Supabase client created')
+
+// Login con Supabase JS
 async function handleLogin(email, password, role) {
     try {
-        console.log('Login attempt:', { email, role });
+        console.log('🔑 Intentando login con Supabase JS...', { email, role })
         
-        // Consulta DIRECTA a la tabla usuarios
-        const response = await fetch(
-            `${SUPABASE_URL}/rest/v1/usuarios?email=eq.${email}&password=eq.${password}&rol=eq.${role}`,
-            {
-                method: 'GET',
-                headers: {
-                    'apikey': SUPABASE_KEY,
-                    'Authorization': `Bearer ${SUPABASE_KEY}`,
-                    'Content-Type': 'application/json'
-                }
+        // Consultar usuario con Supabase
+        const { data, error } = await supabase
+            .from('usuarios')
+            .select('*')
+            .eq('email', email)
+            .eq('password', password)
+            .eq('rol', role)
+            .single()
+
+        console.log('📦 Respuesta Supabase:', { data, error })
+
+        if (error) {
+            console.error('❌ Error Supabase:', error)
+            
+            // Si es error de "no rows", es credenciales incorrectas
+            if (error.code === 'PGRST116') {
+                throw new Error('Credenciales incorrectas')
             }
-        );
-        
-        console.log('Response status:', response.status);
-        
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('HTTP Error:', errorText);
-            throw new Error(`Error ${response.status}: ${errorText}`);
+            throw new Error('Error en la base de datos: ' + error.message)
         }
-        
-        const users = await response.json();
-        console.log('Users found:', users);
-        
-        if (!users || users.length === 0) {
-            throw new Error('Credenciales incorrectas');
+
+        if (!data) {
+            throw new Error('Credenciales incorrectas')
         }
-        
-        const user = users[0];
-        
-        // Guardar en localStorage (texto plano, sin seguridad)
+
+        // Guardar usuario
         localStorage.setItem('currentUser', JSON.stringify({
-            id: user.id,
-            email: user.email,
-            rol: user.rol,
-            nombre: user.nombre,
+            id: data.id,
+            email: data.email,
+            rol: data.rol,
+            nombre: data.nombre,
             loggedIn: true
-        }));
-        
-        // Redirigir según rol
+        }))
+
+        console.log('✅ Login exitoso, redirigiendo...')
+
+        // Redirigir
         if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
-            window.location.href = 'admin/dashboard.html';
+            window.location.href = 'admin/dashboard.html'
         } else {
-            window.location.href = 'index.html';
+            window.location.href = 'index.html'
         }
-        
-        return { success: true };
-        
+
+        return { success: true }
+
     } catch (error) {
-        console.error('Login error details:', error);
-        return { 
-            success: false, 
-            message: error.message.includes('Credenciales') 
-                ? 'Credenciales incorrectas' 
-                : 'Error: ' + error.message 
-        };
-    }
-}
-
-// Logout simple
-function handleLogout() {
-    localStorage.removeItem('currentUser');
-    window.location.href = 'index.html';
-}
-
-// Obtener usuario actual
-function getCurrentUser() {
-    const userStr = localStorage.getItem('currentUser');
-    return userStr ? JSON.parse(userStr) : null;
-}
-
-// Mostrar/ocultar elementos según login
-function updateUIForUser() {
-    const user = getCurrentUser();
-    const adminLink = document.getElementById('adminLink');
-    const logoutBtn = document.getElementById('logoutBtn');
-    const loginBtn = document.querySelector('.btn-login');
-    
-    if (user && user.loggedIn) {
-        if (adminLink) {
-            adminLink.style.display = 'flex';
-            adminLink.href = 'admin/dashboard.html';
-            adminLink.innerHTML = `<i class="fas fa-cog"></i> ${user.rol}`;
+        console.error('💥 Error completo:', error)
+        return {
+            success: false,
+            message: error.message
         }
-        if (logoutBtn) logoutBtn.style.display = 'flex';
-        if (loginBtn) loginBtn.style.display = 'none';
     }
 }
 
-// Inicializar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('Auth.js loaded');
+// Logout
+function handleLogout() {
+    localStorage.removeItem('currentUser')
+    window.location.href = 'index.html'
+}
+
+// Obtener usuario
+function getCurrentUser() {
+    const userStr = localStorage.getItem('currentUser')
+    return userStr ? JSON.parse(userStr) : null
+}
+
+// Actualizar UI
+function updateUIForUser() {
+    const user = getCurrentUser()
+    const adminLink = document.getElementById('adminLink')
+    const logoutBtn = document.getElementById('logoutBtn')
+    const loginBtn = document.querySelector('.btn-login')
+
+    if (user && user.loggedIn) {
+        console.log('👤 Usuario logueado:', user.email)
+        if (adminLink) {
+            adminLink.style.display = 'flex'
+            adminLink.href = 'admin/dashboard.html'
+            adminLink.innerHTML = `<i class="fas fa-cog"></i> ${user.rol}`
+        }
+        if (logoutBtn) logoutBtn.style.display = 'flex'
+        if (loginBtn) loginBtn.style.display = 'none'
+    }
+}
+
+// Test conexión Supabase
+async function testSupabaseConnection() {
+    try {
+        console.log('🧪 Probando conexión a Supabase...')
+        const { data, error } = await supabase
+            .from('usuarios')
+            .select('count')
+            .limit(1)
+
+        if (error) {
+            console.error('❌ Error conexión:', error)
+            return false
+        }
+
+        console.log('✅ Conexión OK, data:', data)
+        return true
+    } catch (error) {
+        console.error('💥 Error test:', error)
+        return false
+    }
+}
+
+// Inicializar
+document.addEventListener('DOMContentLoaded', async function() {
+    console.log('🚀 DOM cargado, inicializando...')
+    
+    // Test conexión
+    const connected = await testSupabaseConnection()
+    console.log(connected ? '✅ Supabase conectado' : '❌ Supabase NO conectado')
     
     // Actualizar UI
-    updateUIForUser();
+    updateUIForUser()
     
-    // Manejar formulario de login
-    const loginForm = document.getElementById('loginForm');
+    // Login form
+    const loginForm = document.getElementById('loginForm')
     if (loginForm) {
         loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
+            e.preventDefault()
             
-            const email = document.getElementById('email').value.trim();
-            const password = document.getElementById('password').value;
-            const role = document.getElementById('role').value;
+            const email = document.getElementById('email').value.trim()
+            const password = document.getElementById('password').value
+            const role = document.getElementById('role').value
             
-            const loginBtn = this.querySelector('.btn-login-submit');
-            const originalText = loginBtn.innerHTML;
-            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
-            loginBtn.disabled = true;
+            const loginBtn = this.querySelector('.btn-login-submit')
+            const originalText = loginBtn.innerHTML
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...'
+            loginBtn.disabled = true
             
-            const result = await handleLogin(email, password, role);
+            const result = await handleLogin(email, password, role)
             
-            const messageDiv = document.getElementById('loginMessage');
+            const messageDiv = document.getElementById('loginMessage')
             if (result.success) {
-                messageDiv.className = 'message success';
-                messageDiv.textContent = '¡Login exitoso! Redirigiendo...';
+                messageDiv.className = 'message success'
+                messageDiv.textContent = '¡Login exitoso! Redirigiendo...'
             } else {
-                messageDiv.className = 'message error';
-                messageDiv.textContent = result.message;
-                loginBtn.innerHTML = originalText;
-                loginBtn.disabled = false;
+                messageDiv.className = 'message error'
+                messageDiv.textContent = result.message
+                loginBtn.innerHTML = originalText
+                loginBtn.disabled = false
             }
-        });
+        })
     }
     
-    // Manejar logout
-    const logoutBtn = document.getElementById('logoutBtn');
+    // Logout
+    const logoutBtn = document.getElementById('logoutBtn')
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleLogout();
-        });
+            e.preventDefault()
+            handleLogout()
+        })
     }
     
-    // Proteger páginas admin
+    // Proteger admin
     if (window.location.pathname.includes('admin')) {
-        const user = getCurrentUser();
+        const user = getCurrentUser()
         if (!user || !user.loggedIn) {
-            window.location.href = 'login.html';
+            window.location.href = 'login.html'
         }
     }
-});
+})
