@@ -3,22 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Deportiva - Inicio</title>
+    <title>Bendito Jugador</title>
+    <link rel="icon" href="images/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/icon.png">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
-            <a href="index.html" class="logo">Deportes<span>Store</span></a>
+            <a href="index.html" class="logo">
+                <img src="images/icon.png" alt="Bendito Jugador Logo">
+                <span style="color: #fed05d;">Bendito</span>Jugador
+            </a>
             <div class="nav-links">
-                <a href="index.html" class="active">Inicio</a>
-                <a href="#productos">Productos</a>
-                <a href="#categorias">Categorías</a>
-                <a href="#contacto">Contacto</a>
-                <a href="login.html" class="btn-login">Iniciar Sesión</a>
-                <a href="#" id="adminLink" class="btn-admin" style="display:none;">
-                    <i class="fas fa-cog"></i> Admin
+                <a href="index.html" class="active">
+                    <i class="fas fa-home"></i> Inicio
+                </a>
+                <a href="#productos">
+                    <i class="fas fa-tshirt"></i> Productos
+                </a>
+                <a href="#categorias">
+                    <i class="fas fa-tags"></i> Categorías
+                </a>
+                <a href="#contacto">
+                    <i class="fas fa-phone"></i> Contacto
+                </a>
+                <a href="login.html" class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+                </a>
+                <a href="admin/dashboard.html" id="adminLink" class="btn-admin" style="display:none;">
+                    <i class="fas fa-cog"></i> Panel
                 </a>
                 <a href="#" id="logoutBtn" class="btn-logout" style="display:none;">
                     <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
@@ -29,9 +44,11 @@
 
     <header class="hero">
         <div class="hero-content">
-            <h1>Ropa Deportiva Oficial</h1>
-            <p>Las mejores camisetas y equipamiento deportivo</p>
-            <a href="#productos" class="btn-hero">Ver Productos</a>
+            <h1>Bendito Jugador</h1>
+            <p>Las mejores camisetas y equipamiento deportivo oficial</p>
+            <a href="#productos" class="btn-hero">
+                <i class="fas fa-tshirt"></i> Ver Productos
+            </a>
         </div>
     </header>
 
@@ -46,7 +63,6 @@
                 <button class="filter-btn" data-filter="club">Club</button>
             </div>
             <div class="products-grid" id="productsGrid">
-                <!-- Los productos se cargarán aquí con JavaScript -->
                 <div class="loading">Cargando productos...</div>
             </div>
         </section>
@@ -55,22 +71,22 @@
             <h2>Categorías</h2>
             <div class="categories-grid">
                 <div class="category-card">
-                    <i class="fas fa-futbol"></i>
+                    <i class="fas fa-futbol" style="color: #9c1d26;"></i>
                     <h3>Fútbol</h3>
                     <p>Camisetas oficiales y alternativas</p>
                 </div>
                 <div class="category-card">
-                    <i class="fas fa-basketball-ball"></i>
+                    <i class="fas fa-basketball-ball" style="color: #9c1d26;"></i>
                     <h3>Básquet</h3>
                     <p>Equipos NBA y selecciones</p>
                 </div>
                 <div class="category-card">
-                    <i class="fas fa-baseball-ball"></i>
+                    <i class="fas fa-baseball-ball" style="color: #9c1d26;"></i>
                     <h3>Béisbol</h3>
                     <p>MLB y equipos internacionales</p>
                 </div>
                 <div class="category-card">
-                    <i class="fas fa-tshirt"></i>
+                    <i class="fas fa-tshirt" style="color: #fed05d;"></i>
                     <h3>Ropa Deportiva</h3>
                     <p>Shorts, chaquetas y más</p>
                 </div>
@@ -81,25 +97,26 @@
     <footer id="contacto">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>DeportesStore</h3>
+                <h3 style="color: #fed05d;">Bendito Jugador</h3>
                 <p>Tu tienda de confianza para ropa deportiva oficial.</p>
             </div>
             <div class="footer-section">
-                <h3>Contacto</h3>
-                <p><i class="fas fa-envelope"></i> info@deportesstore.com</p>
-                <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+                <h3 style="color: #fed05d;">Contacto</h3>
+                <p><i class="fas fa-envelope" style="color: #fed05d;"></i> info@benditojugador.com</p>
+                <p><i class="fas fa-phone" style="color: #fed05d;"></i> +1 234 567 890</p>
+                <p><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp: +1 234 567 891</p>
             </div>
             <div class="footer-section">
-                <h3>Síguenos</h3>
+                <h3 style="color: #fed05d;">Síguenos</h3>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-facebook" style="color: #fed05d;"></i></a>
+                    <a href="#"><i class="fab fa-instagram" style="color: #fed05d;"></i></a>
+                    <a href="#"><i class="fab fa-twitter" style="color: #fed05d;"></i></a>
                 </div>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 DeportesStore. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Bendito Jugador. Todos los derechos reservados.</p>
         </div>
     </footer>
 
