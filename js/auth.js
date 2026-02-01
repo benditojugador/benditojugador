@@ -1,12 +1,8 @@
-// auth.js - CON SUPABASE JS V2
-
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-// Configuración
 const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
 
-// Crear cliente Supabase
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
 console.log('✅ Supabase client created')

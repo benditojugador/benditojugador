@@ -1,75 +1,142 @@
-// auth.js - CON SUPABASE JS V2
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard | Cargar producto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
-
-// Configuración
-const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
-
-// Crear cliente Supabase
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
-
-console.log('✅ Supabase client created')
-
-// ⬅️ EXPORTAR DESPUÉS DE CREARLO
-export { supabase }
-
-// ================= LOGIN =================
-async function handleLogin(email, password, role) {
-    try {
-        console.log('🔑 Intentando login con Supabase JS...', { email, role })
-        
-        const { data, error } = await supabase
-            .from('usuarios')
-            .select('*')
-            .eq('email', email)
-            .eq('password', password)
-            .eq('rol', role)
-            .single()
-
-        if (error) {
-            if (error.code === 'PGRST116') {
-                throw new Error('Credenciales incorrectas')
-            }
-            throw new Error(error.message)
-        }
-
-        localStorage.setItem('currentUser', JSON.stringify({
-            id: data.id,
-            email: data.email,
-            rol: data.rol,
-            nombre: data.nombre,
-            loggedIn: true
-        }))
-
-        if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
-            window.location.href = 'admin/dashboard.html'
-        } else {
-            window.location.href = 'index.html'
-        }
-
-        return { success: true }
-
-    } catch (error) {
-        return { success: false, message: error.message }
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 30px;
     }
-}
-
-// ================= HELPERS =================
-function handleLogout() {
-    localStorage.removeItem('currentUser')
-    window.location.href = 'index.html'
-}
-
-function getCurrentUser() {
-    const userStr = localStorage.getItem('currentUser')
-    return userStr ? JSON.parse(userStr) : null
-}
-
-// ================= INIT =================
-document.addEventListener('DOMContentLoaded', async () => {
-    const user = getCurrentUser()
-    if (window.location.pathname.includes('admin') && (!user || !user.loggedIn)) {
-        window.location.href = 'login.html'
+    form {
+      max-width: 720px;
+      background: #020617;
+      padding: 20px;
+      border-radius: 8px;
     }
-})
+    label { display: block; margin-top: 12px; }
+    input, textarea {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #020617;
+      color: #e5e7eb;
+      outline: 1px solid #1e293b;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: #22c55e;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .ok { color: #4ade80; margin-top: 15px; }
+    .error { color: #f87171; margin-top: 15px; }
+  </style>
+</head>
+
+<body>
+
+<h1>📦 Cargar producto deportivo</h1>
+
+<form id="producto-form" method="post" action="javascript:void(0);">
+  <label>Oficial / Alternativa</label>
+  <input name="oficial_alternativa" required />
+
+  <label>Año</label>
+  <input name="año" type="number" />
+
+  <label>Equipo</label>
+  <input name="equipo" required />
+
+  <label>Tipo de ropa</label>
+  <input name="tipo_ropa" required />
+
+  <label>Tipo de equipo</label>
+  <input name="tipo_equipo" required />
+
+  <label>Nacionalidad</label>
+  <input name="nacionalidad" required />
+
+  <label>Deporte</label>
+  <input name="deporte" required />
+
+  <label>Etiquetas</label>
+  <input name="etiquetas" required />
+
+  <label>Descripción</label>
+  <textarea name="descripcion"></textarea>
+
+  <label>Portada (URL)</label>
+  <input name="portada" />
+
+  <label>Img 1</label><input name="img1" />
+  <label>Img 2</label><input name="img2" />
+  <label>Img 3</label><input name="img3" />
+  <label>Img 4</label><input name="img4" />
+  <label>Img 5</label><input name="img5" />
+
+  <button type="submit">Guardar producto</button>
+  <div id="msg"></div>
+</form>
+
+<script type="module">
+  import { supabase } from "../js/auth.js";
+
+  const form = document.getElementById("producto-form");
+  const msg = document.getElementById("msg");
+
+  // 🔐 Validar usuario desde localStorage (tu sistema actual)
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+
+  if (!user || !user.loggedIn) {
+    window.location.href = "../login.html";
+  }
+
+  if (!["ADMINISTRADOR", "OPERADOR"].includes(user.rol)) {
+    alert("Acceso denegado");
+    window.location.href = "../index.html";
+  }
+
+  // 📤 Submit
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    msg.className = "";
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    const payload = {
+      ...data,
+      cargado_por: user.id
+    };
+
+    console.log("PAYLOAD →", payload);
+
+    const { error } = await supabase
+      .from("productos_deportivos")
+      .insert(payload);
+
+    if (error) {
+      console.error(error);
+      msg.textContent = error.message;
+      msg.className = "error";
+    } else {
+      msg.textContent = "✅ Producto cargado correctamente";
+      msg.className = "ok";
+      form.reset();
+    }
+  });
+</script>
+
+</body>
+</html>
