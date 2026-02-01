@@ -5,9 +5,6 @@
   <title>Dashboard | Cargar producto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Supabase v2 CDN (define el global Supabase y supabase) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
     body {
       font-family: system-ui, sans-serif;
@@ -92,31 +89,24 @@
   <div id="msg"></div>
 </form>
 
-<script>
-  // ⛔ NO usar el nombre "supabase"
-  const supabaseClient = Supabase.createClient(
-    "https://lentkpuclkmvktnujmva.supabase.co",
-    "sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB"
-  );
+<!-- USAMOS AUTH.JS -->
+<script type="module">
+  import { supabase } from "../js/auth.js";
 
   const form = document.getElementById("producto-form");
   const msg = document.getElementById("msg");
 
-  // === CONTROL DE ACCESO ===
-  (async () => {
-    const { data: { user } } = await supabaseClient.auth.getUser();
+  // === VALIDAR USUARIO DESDE LOCALSTORAGE ===
+  const user = JSON.parse(localStorage.getItem("currentUser"));
 
-    if (!user) {
-      location.href = "/login.html";
-      return;
-    }
+  if (!user || !user.loggedIn) {
+    window.location.href = "../login.html";
+  }
 
-    const rol = user.user_metadata?.rol;
-    if (rol !== "ADMINISTRADOR" && rol !== "OPERADOR") {
-      alert("Acceso denegado");
-      location.href = "/";
-    }
-  })();
+  if (!["ADMINISTRADOR", "OPERADOR"].includes(user.rol)) {
+    alert("Acceso denegado");
+    window.location.href = "../index.html";
+  }
 
   // === SUBMIT ===
   form.addEventListener("submit", async (e) => {
@@ -125,7 +115,6 @@
     msg.className = "";
 
     const data = Object.fromEntries(new FormData(form).entries());
-    const { data: { user } } = await supabaseClient.auth.getUser();
 
     const payload = {
       ...data,
@@ -134,7 +123,7 @@
 
     console.log("PAYLOAD →", payload);
 
-    const { error } = await supabaseClient
+    const { error } = await supabase
       .from("productos_deportivos")
       .insert(payload);
 
