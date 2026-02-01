@@ -5,60 +5,8 @@
   <title>Dashboard | Cargar producto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Supabase v2 (ESM) -->
-  <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabaseUrl = "https://lentkpuclkmvktnujmva.supabase.co";
-    const supabaseKey = "sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB";
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const form = document.getElementById("producto-form");
-    const msg = document.getElementById("msg");
-
-    // ===== CONTROL DE ACCESO =====
-    const { data: { user } } = await supabase.auth.getUser();
-
-    if (!user) {
-      location.href = "/login.html";
-    }
-
-    const rol = user.user_metadata?.rol;
-    if (rol !== "ADMINISTRADOR" && rol !== "OPERADOR") {
-      alert("Acceso denegado");
-      location.href = "/";
-    }
-
-    // ===== SUBMIT =====
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      msg.textContent = "";
-      msg.className = "";
-
-      const data = Object.fromEntries(new FormData(form).entries());
-
-      const payload = {
-        ...data,
-        cargado_por: user.id
-      };
-
-      console.log("PAYLOAD →", payload);
-
-      const { error } = await supabase
-        .from("productos_deportivos")
-        .insert(payload);
-
-      if (error) {
-        console.error(error);
-        msg.textContent = error.message;
-        msg.className = "error";
-      } else {
-        msg.textContent = "✅ Producto cargado correctamente";
-        msg.className = "ok";
-        form.reset();
-      }
-    });
-  </script>
+  <!-- SUPABASE GLOBAL (UNA SOLA VEZ EN TODO EL PROYECTO) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     body {
@@ -143,6 +91,64 @@
   <button type="submit">Guardar producto</button>
   <div id="msg"></div>
 </form>
+
+<script>
+  // === USAR CLIENTE GLOBAL EXISTENTE ===
+  const supabase = window.supabase.createClient(
+    "https://lentkpuclkmvktnujmva.supabase.co",
+    "sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB"
+  );
+
+  const form = document.getElementById("producto-form");
+  const msg = document.getElementById("msg");
+
+  // === CONTROL DE ACCESO ===
+  (async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      location.href = "/login.html";
+      return;
+    }
+
+    const rol = user.user_metadata?.rol;
+    if (rol !== "ADMINISTRADOR" && rol !== "OPERADOR") {
+      alert("Acceso denegado");
+      location.href = "/";
+    }
+  })();
+
+  // === SUBMIT ===
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    msg.className = "";
+
+    const data = Object.fromEntries(new FormData(form).entries());
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const payload = {
+      ...data,
+      cargado_por: user.id
+    };
+
+    console.log("PAYLOAD →", payload);
+
+    const { error } = await supabase
+      .from("productos_deportivos")
+      .insert(payload);
+
+    if (error) {
+      console.error(error);
+      msg.textContent = error.message;
+      msg.className = "error";
+    } else {
+      msg.textContent = "✅ Producto cargado correctamente";
+      msg.className = "ok";
+      form.reset();
+    }
+  });
+</script>
 
 </body>
 </html>
