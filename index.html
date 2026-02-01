@@ -3,124 +3,630 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bendito Jugador</title>
+    <title>Bendito Jugador - Ropa Deportiva Oficial</title>
     <link rel="icon" href="images/icon.png" type="image/png">
     <link rel="apple-touch-icon" href="images/icon.png">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Swiper CSS para carrusel -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <style>
+        /* Estilos específicos para esta página */
+        :root {
+            --rojo: #9c1d26;
+            --dorado: #fed05d;
+            --hueso: #eceadb;
+            --gris: #2c3e50;
+            --gris-claro: #95a5a6;
+        }
+        
+        /* Hero moderno */
+        .modern-hero {
+            background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)),
+                        url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 6rem 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .modern-hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+        
+        .modern-hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background: var(--dorado);
+            color: var(--gris);
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(254, 208, 93, 0.3);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background: white;
+            color: var(--gris);
+        }
+        
+        /* Carrusel de productos */
+        .carousel-section {
+            padding: 5rem 0;
+            background: var(--hueso);
+        }
+        
+        .carousel-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--gris);
+        }
+        
+        .swiper {
+            width: 100%;
+            padding: 2rem 0;
+        }
+        
+        .swiper-slide {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+        }
+        
+        .swiper-slide:hover {
+            transform: translateY(-10px);
+        }
+        
+        .product-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-image {
+            height: 250px;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        .swiper-slide:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-badge {
+            background: var(--rojo);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+            align-self: flex-start;
+        }
+        
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--gris);
+        }
+        
+        .product-description {
+            color: var(--gris-claro);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+        
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--rojo);
+            margin-bottom: 1rem;
+        }
+        
+        .product-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--gris-claro);
+            margin-bottom: 1.5rem;
+        }
+        
+        .product-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        /* Categorías modernas */
+        .categories-modern {
+            padding: 5rem 0;
+            background: white;
+        }
+        
+        .categories-grid-modern {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+        
+        .category-modern {
+            background: var(--hueso);
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .category-modern:hover {
+            border-color: var(--dorado);
+            transform: translateY(-5px);
+        }
+        
+        .category-icon {
+            font-size: 3rem;
+            color: var(--rojo);
+            margin-bottom: 1.5rem;
+        }
+        
+        .category-modern h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--gris);
+        }
+        
+        /* Footer SEO optimizado */
+        .footer-seo {
+            background: var(--gris);
+            color: white;
+            padding: 4rem 0 0;
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem 3rem;
+        }
+        
+        .footer-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        
+        .footer-logo img {
+            height: 50px;
+            width: auto;
+        }
+        
+        .footer-logo p {
+            opacity: 0.8;
+            line-height: 1.6;
+        }
+        
+        .footer-links h3,
+        .footer-contact h3,
+        .footer-seo-section h3 {
+            color: var(--dorado);
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-links h3:after,
+        .footer-contact h3:after,
+        .footer-seo-section h3:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--rojo);
+        }
+        
+        .footer-links ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+        
+        .footer-links a {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .footer-links a:hover {
+            opacity: 1;
+            color: var(--dorado);
+        }
+        
+        .footer-contact p {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .footer-seo-section p {
+            opacity: 0.8;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+        
+        .footer-bottom {
+            background: rgba(0,0,0,0.2);
+            padding: 1.5rem;
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .social-icons a:hover {
+            background: var(--rojo);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .modern-hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .modern-hero p {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-primary, .btn-secondary {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar">
+    <!-- Navbar Minimalista -->
+    <nav class="navbar" style="background: white; box-shadow: 0 2px 20px rgba(0,0,0,0.1);">
         <div class="nav-container">
             <a href="index.html" class="logo">
-                <img src="images/icon.png" alt="Bendito Jugador Logo">
-                <span style="color: #fed05d;">Bendito</span>Jugador
+                <img src="images/icon.png" alt="Bendito Jugador Logo" style="height: 45px;">
             </a>
             <div class="nav-links">
-                <a href="index.html" class="active">
-                    <i class="fas fa-home"></i> Inicio
-                </a>
-                <a href="#productos">
-                    <i class="fas fa-tshirt"></i> Productos
-                </a>
-                <a href="#categorias">
-                    <i class="fas fa-tags"></i> Categorías
-                </a>
-                <a href="#contacto">
-                    <i class="fas fa-phone"></i> Contacto2
-                </a>
-                <a href="login.html" class="btn-login" id="loginBtn">
+                <a href="index.html" class="active" style="color: var(--gris);">Inicio</a>
+                <a href="#productos" style="color: var(--gris);">Productos</a>
+                <a href="#categorias" style="color: var(--gris);">Categorías</a>
+                <a href="#contacto" style="color: var(--gris);">Contacto</a>
+                <a href="login.html" class="btn-login" id="loginBtn" style="background: var(--rojo);">
                     <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
                 </a>
-                <a href="admin/dashboard.html" id="adminLink" class="btn-admin" style="display:none;">
+                <a href="admin/dashboard.html" id="adminLink" class="btn-admin" style="display:none; background: var(--dorado); color: var(--gris);">
                     <i class="fas fa-cog"></i> Panel
                 </a>
                 <a href="#" id="logoutBtn" class="btn-logout" style="display:none;">
-                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    <i class="fas fa-sign-out-alt"></i>
                 </a>
             </div>
         </div>
     </nav>
 
-    <header class="hero">
+    <!-- Hero Moderno -->
+    <section class="modern-hero">
         <div class="hero-content">
-            <h1>Bendito Jugador</h1>
-            <p>Las mejores camisetas y equipamiento deportivo oficial</p>
-            <a href="#productos" class="btn-hero">
-                <i class="fas fa-tshirt"></i> Ver Productos
-            </a>
-        </div>
-    </header>
-
-    <main>
-        <section id="productos" class="products-section">
-            <h2>Productos Destacados</h2>
-            <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="all">Todos</button>
-                <button class="filter-btn" data-filter="futbol">Fútbol</button>
-                <button class="filter-btn" data-filter="basquet">Básquet</button>
-                <button class="filter-btn" data-filter="nacional">Nacional</button>
-                <button class="filter-btn" data-filter="club">Club</button>
-            </div>
-            <div class="products-grid" id="productsGrid">
-                <div class="loading">Cargando productos...</div>
-            </div>
-        </section>
-
-        <section id="categorias" class="categories-section">
-            <h2>Categorías</h2>
-            <div class="categories-grid">
-                <div class="category-card">
-                    <i class="fas fa-futbol" style="color: #9c1d26;"></i>
-                    <h3>Fútbol</h3>
-                    <p>Camisetas oficiales y alternativas</p>
-                </div>
-                <div class="category-card">
-                    <i class="fas fa-basketball-ball" style="color: #9c1d26;"></i>
-                    <h3>Básquet</h3>
-                    <p>Equipos NBA y selecciones</p>
-                </div>
-                <div class="category-card">
-                    <i class="fas fa-baseball-ball" style="color: #9c1d26;"></i>
-                    <h3>Béisbol</h3>
-                    <p>MLB y equipos internacionales</p>
-                </div>
-                <div class="category-card">
-                    <i class="fas fa-tshirt" style="color: #fed05d;"></i>
-                    <h3>Ropa Deportiva</h3>
-                    <p>Shorts, chaquetas y más</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer id="contacto">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h3 style="color: #fed05d;">Bendito Jugador</h3>
-                <p>Tu tienda de confianza para ropa deportiva oficial.</p>
-            </div>
-            <div class="footer-section">
-                <h3 style="color: #fed05d;">Contacto</h3>
-                <p><i class="fas fa-envelope" style="color: #fed05d;"></i> info@benditojugador.com</p>
-                <p><i class="fas fa-phone" style="color: #fed05d;"></i> +1 234 567 890</p>
-                <p><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp: +1 234 567 891</p>
-            </div>
-            <div class="footer-section">
-                <h3 style="color: #fed05d;">Síguenos</h3>
-                <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook" style="color: #fed05d;"></i></a>
-                    <a href="#"><i class="fab fa-instagram" style="color: #fed05d;"></i></a>
-                    <a href="#"><i class="fab fa-twitter" style="color: #fed05d;"></i></a>
-                </div>
+            <h1>Ropa Deportiva de Élite</h1>
+            <p>Descubre las mejores camisetas oficiales de fútbol, básquet y más. Calidad premium y envío rápido a todo el país.</p>
+            <div class="cta-buttons">
+                <a href="#productos" class="btn-primary">
+                    <i class="fas fa-shopping-bag"></i> Ver Colección
+                </a>
+                <a href="#categorias" class="btn-secondary">
+                    <i class="fas fa-tags"></i> Explorar Categorías
+                </a>
             </div>
         </div>
+    </section>
+
+    <!-- Carrusel de Productos -->
+    <section id="productos" class="carousel-section">
+        <h2>Productos Destacados</h2>
+        <div class="swiper">
+            <div class="swiper-wrapper" id="productsCarousel">
+                <!-- Los productos se cargarán aquí -->
+                <div class="swiper-slide">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2ce4e8c0f97b4d4c8683af8a00fb8f4b_9366/Camiseta_Titular_Seleccion_Argentina_22_Messi_Blanco_HF0652_01_laydown.jpg" alt="Argentina 2022">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-badge">Oficial</span>
+                            <h3 class="product-title">Argentina 2022</h3>
+                            <p class="product-description">Camiseta oficial campeona del mundo Qatar 2022. Talle M-XL disponible.</p>
+                            <div class="product-meta">
+                                <span><i class="fas fa-flag"></i> Argentino</span>
+                                <span><i class="fas fa-calendar"></i> 2022</span>
+                            </div>
+                            <div class="product-price">$89.990</div>
+                            <a href="producto.html?id=1" class="btn-primary" style="padding: 0.8rem; font-size: 1rem;">
+                                Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Navigation buttons -->
+            <div class="swiper-button-next" style="color: var(--rojo);"></div>
+            <div class="swiper-button-prev" style="color: var(--rojo);"></div>
+            <!-- Pagination -->
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <!-- Categorías Modernas -->
+    <section id="categorias" class="categories-modern">
+        <div class="categories-grid-modern">
+            <div class="category-modern">
+                <div class="category-icon">
+                    <i class="fas fa-futbol"></i>
+                </div>
+                <h3>Fútbol</h3>
+                <p>Camisetas oficiales de selecciones y clubes</p>
+            </div>
+            <div class="category-modern">
+                <div class="category-icon">
+                    <i class="fas fa-basketball-ball"></i>
+                </div>
+                <h3>Básquet</h3>
+                <p>NBA y ligas internacionales</p>
+            </div>
+            <div class="category-modern">
+                <div class="category-icon">
+                    <i class="fas fa-tshirt"></i>
+                </div>
+                <h3>Ropa Deportiva</h3>
+                <p>Shorts, chaquetas y accesorios</p>
+            </div>
+            <div class="category-modern">
+                <div class="category-icon">
+                    <i class="fas fa-medal"></i>
+                </div>
+                <h3>Ediciones Especiales</h3>
+                <p>Productos exclusivos y limitados</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer SEO Optimizado -->
+    <footer id="contacto" class="footer-seo">
+        <div class="footer-grid">
+            <!-- Logo y descripción -->
+            <div class="footer-logo">
+                <img src="images/icon.png" alt="Bendito Jugador">
+                <p><strong>Bendito Jugador</strong> - Tu tienda especializada en ropa deportiva oficial. Ofrecemos las mejores marcas y productos exclusivos para verdaderos amantes del deporte.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            
+            <!-- Enlaces rápidos -->
+            <div class="footer-links">
+                <h3>Enlaces Rápidos</h3>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Inicio</a></li>
+                    <li><a href="#productos"><i class="fas fa-chevron-right"></i> Productos Destacados</a></li>
+                    <li><a href="#categorias"><i class="fas fa-chevron-right"></i> Categorías</a></li>
+                    <li><a href="login.html"><i class="fas fa-chevron-right"></i> Mi Cuenta</a></li>
+                    <li><a href="admin/dashboard.html"><i class="fas fa-chevron-right"></i> Panel Admin</a></li>
+                </ul>
+            </div>
+            
+            <!-- Contacto -->
+            <div class="footer-contact">
+                <h3>Contacto</h3>
+                <p><i class="fas fa-map-marker-alt" style="color: var(--dorado);"></i> Av. Deportiva 1234, Buenos Aires</p>
+                <p><i class="fas fa-phone" style="color: var(--dorado);"></i> +54 11 2345-6789</p>
+                <p><i class="fas fa-envelope" style="color: var(--dorado);"></i> info@benditojugador.com</p>
+                <p><i class="fab fa-whatsapp" style="color: #25D366;"></i> WhatsApp: +54 9 11 8765-4321</p>
+            </div>
+            
+            <!-- SEO Text -->
+            <div class="footer-seo-section">
+                <h3>Bendito Jugador - Ropa Deportiva</h3>
+                <p>Tienda online especializada en <strong>camisetas de fútbol oficiales</strong>, ropa deportiva de alta calidad y productos exclusivos. Envíos a todo Argentina. Las mejores marcas deportivas: selecciones nacionales, clubes internacionales y ediciones especiales para coleccionistas.</p>
+                <p style="margin-top: 1rem; font-size: 0.9rem; opacity: 0.6;">
+                    © 2024 Bendito Jugador. Todos los derechos reservados.
+                </p>
+            </div>
+        </div>
+        
         <div class="footer-bottom">
-            <p>&copy; 2024 Bendito Jugador. Todos los derechos reservados.</p>
+            <p>&copy; 2024 Bendito Jugador - Ropa Deportiva Oficial | <a href="#" style="color: var(--dorado); text-decoration: none;">Política de Privacidad</a> | <a href="#" style="color: var(--dorado); text-decoration: none;">Términos y Condiciones</a></p>
         </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/products.js"></script>
+    <script>
+        // Inicializar carrusel
+        document.addEventListener('DOMContentLoaded', function() {
+            // Swiper carrusel
+            const swiper = new Swiper('.swiper', {
+                slidesPerView: 1,
+                spaceBetween: 20,
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                breakpoints: {
+                    640: { slidesPerView: 2 },
+                    1024: { slidesPerView: 3 },
+                    1280: { slidesPerView: 4 }
+                }
+            });
+            
+            // Cargar productos dinámicamente
+            loadProductsForCarousel();
+        });
+        
+        // Función para cargar productos en el carrusel
+        async function loadProductsForCarousel() {
+            try {
+                // Aquí integrarías con Supabase
+                // Por ahora datos de ejemplo
+                const sampleProducts = [
+                    {
+                        id: 1,
+                        equipo: 'Argentina',
+                        tipo_ropa: 'Camiseta',
+                        oficial_alternativa: 'Oficial',
+                        año: 2022,
+                        nacionalidad: 'Argentino',
+                        descripcion: 'Camiseta oficial campeona del mundo',
+                        portada: 'https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2ce4e8c0f97b4d4c8683af8a00fb8f4b_9366/Camiseta_Titular_Seleccion_Argentina_22_Messi_Blanco_HF0652_01_laydown.jpg',
+                        precio: 89990
+                    },
+                    {
+                        id: 2,
+                        equipo: 'Brasil',
+                        tipo_ropa: 'Camiseta',
+                        oficial_alternativa: 'Alternativa',
+                        año: 2023,
+                        nacionalidad: 'Brasileño',
+                        descripcion: 'Camiseta alternativa amarilla',
+                        portada: 'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b33e6246-4628-4c82-9855-6de8ab3aac9d/brasil-2023-away-dri-fit-advanced-football-shirt-0WrPsx.png',
+                        precio: 79990
+                    },
+                    {
+                        id: 3,
+                        equipo: 'Manchester United',
+                        tipo_ropa: 'Camiseta',
+                        oficial_alternativa: 'Oficial',
+                        año: 2023,
+                        nacionalidad: 'Inglés',
+                        descripcion: 'Camiseta oficial temporada 2023/24',
+                        portada: 'https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/5e5b48f9925b40e0ad44afd9013a4d81_9366/Camiseta_Manchester_United_23-24_Titular_Rojo_IB8175_01_laydown.jpg',
+                        precio: 94990
+                    }
+                ];
+                
+                const carousel = document.getElementById('productsCarousel');
+                if (carousel) {
+                    // Aquí agregarías la lógica para cargar desde Supabase
+                    console.log('Cargar productos desde Supabase aquí');
+                }
+                
+            } catch (error) {
+                console.error('Error cargando productos:', error);
+            }
+        }
+    </script>
 </body>
 </html>
