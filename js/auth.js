@@ -1,20 +1,39 @@
 // Configuración de Supabase
-const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'; // Reemplaza con tu URL
-const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'; // Reemplaza con tu clave anónima
+const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB';
 
 let supabase;
 
-// Inicializar Supabase
+// Inicializar Supabase - VERSIÓN CORREGIDA
 async function initSupabase() {
-    const supabaseScript = document.createElement('script');
-    supabaseScript.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    supabaseScript.onload = async () => {
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    try {
+        // Cargar Supabase desde CDN con import dinámico
+        const { createClient } = await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+        
+        // Crear cliente
+        supabase = createClient(SUPABASE_URL, SUPABASE_KEY, {
+            auth: {
+                persistSession: false,
+                autoRefreshToken: false
+            }
+        });
+        
+        console.log('✅ Supabase inicializado correctamente');
+        
+        // Verificar conexión
+        const { data, error } = await supabase.from('usuarios').select('count').limit(1);
+        if (error) {
+            console.warn('⚠️ Supabase conectado, pero error en tabla:', error.message);
+        } else {
+            console.log('✅ Conexión a Supabase verificada');
+        }
         
         // Verificar si hay usuario logueado
         await checkAuth();
-    };
-    document.head.appendChild(supabaseScript);
+        
+    } catch (error) {
+        console.error('❌ Error inicializando Supabase:', error);
+    }
 }
 
 // Verificar autenticación
@@ -50,11 +69,18 @@ async function checkAuth() {
     }
 }
 
-// Manejar login
+// Manejar login - VERSIÓN SIMPLIFICADA
 async function handleLogin(email, password, role) {
     try {
-        // Verificar credenciales directamente en la base de datos
-        const { data: users, error } = await supabase
+        console.log('Intentando login con:', { email, role });
+        
+        // Verificar que supabase esté inicializado
+        if (!supabase) {
+            throw new Error('Supabase no está inicializado');
+        }
+        
+        // Verificar credenciales directamente
+        const { data: user, error } = await supabase
             .from('usuarios')
             .select('*')
             .eq('email', email)
@@ -62,20 +88,25 @@ async function handleLogin(email, password, role) {
             .eq('rol', role)
             .single();
 
-        if (error || !users) {
+        if (error) {
+            console.error('Error Supabase:', error);
+            throw new Error('Error de conexión con la base de datos');
+        }
+        
+        if (!user) {
             throw new Error('Credenciales incorrectas');
         }
 
         // Guardar usuario en localStorage
         localStorage.setItem('currentUser', JSON.stringify({
-            id: users.id,
-            email: users.email,
-            rol: users.rol,
+            id: user.id,
+            email: user.email,
+            rol: user.rol,
             loggedIn: true
         }));
 
-        // Redirigir según el rol
-        if (role === 'ADMINISTRADOR' || role === 'OPERADOR' || role === 'MAYORISTA') {
+        // Redirigir
+        if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
             window.location.href = 'admin/dashboard.html';
         } else {
             window.location.href = 'index.html';
@@ -84,7 +115,12 @@ async function handleLogin(email, password, role) {
         return { success: true };
     } catch (error) {
         console.error('Error en login:', error);
-        return { success: false, message: error.message };
+        return { 
+            success: false, 
+            message: error.message === 'Credenciales incorrectas' 
+                ? 'Credenciales incorrectas' 
+                : 'Error en el servidor. Intenta nuevamente.' 
+        };
     }
 }
 
@@ -100,23 +136,10 @@ function getCurrentUser() {
     return userStr ? JSON.parse(userStr) : null;
 }
 
-// Verificar permisos
-function checkPermission(requiredRole) {
-    const user = getCurrentUser();
-    if (!user) return false;
-    
-    if (requiredRole === 'ADMINISTRADOR') {
-        return user.rol === 'ADMINISTRADOR';
-    } else if (requiredRole === 'OPERADOR') {
-        return user.rol === 'ADMINISTRADOR' || user.rol === 'OPERADOR';
-    } else if (requiredRole === 'MAYORISTA') {
-        return user.rol === 'ADMINISTRADOR' || user.rol === 'MAYORISTA';
-    }
-    return false;
-}
-
 // Inicializar cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM cargado, inicializando...');
+    
     // Inicializar Supabase
     initSupabase();
     
