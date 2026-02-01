@@ -5,7 +5,7 @@
   <title>Dashboard | Cargar producto</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Supabase -->
+  <!-- Supabase JS v2 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -19,7 +19,7 @@
       margin-bottom: 20px;
     }
     form {
-      max-width: 700px;
+      max-width: 720px;
       background: #020617;
       padding: 20px;
       border-radius: 8px;
@@ -28,7 +28,6 @@
       display: block;
       margin-top: 12px;
       font-size: 14px;
-      opacity: 0.9;
     }
     input, textarea {
       width: 100%;
@@ -40,9 +39,7 @@
       color: #e5e7eb;
       outline: 1px solid #1e293b;
     }
-    textarea {
-      resize: vertical;
-    }
+    textarea { resize: vertical; }
     button {
       margin-top: 20px;
       padding: 12px;
@@ -54,21 +51,15 @@
       border-radius: 6px;
       cursor: pointer;
     }
-    .error {
-      color: #f87171;
-      margin-top: 15px;
-    }
-    .ok {
-      color: #4ade80;
-      margin-top: 15px;
-    }
+    .error { color: #f87171; margin-top: 15px; }
+    .ok { color: #4ade80; margin-top: 15px; }
   </style>
 </head>
 <body>
 
 <h1>📦 Cargar producto deportivo</h1>
 
-<form id="producto-form">
+<form id="producto-form" method="post" action="javascript:void(0);">
   <label>Oficial / Alternativa</label>
   <input name="oficial_alternativa" required />
 
@@ -96,7 +87,7 @@
   <label>Descripción</label>
   <textarea name="descripcion" rows="4"></textarea>
 
-  <label>Imagen de portada (URL)</label>
+  <label>Imagen portada (URL)</label>
   <input name="portada" />
 
   <label>Imagen 1</label>
@@ -115,7 +106,7 @@
 </form>
 
 <script>
-  // === SUPABASE CONFIG ===
+  // ================= SUPABASE CONFIG =================
   const supabase = window.supabase.createClient(
     'https://lentkpuclkmvktnujmva.supabase.co',
     'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
@@ -124,11 +115,11 @@
   const form = document.getElementById('producto-form');
   const msg = document.getElementById('msg');
 
-  // === CONTROL DE ROL ===
+  // ================= CONTROL DE ACCESO =================
   async function validarAcceso() {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-    if (!user) {
+    if (error || !user) {
       location.href = '/login.html';
       return;
     }
@@ -143,28 +134,32 @@
 
   validarAcceso();
 
-  // === GUARDAR PRODUCTO ===
+  // ================= SUBMIT FORM =================
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     msg.textContent = '';
+    msg.className = '';
 
-    const data = Object.fromEntries(new FormData(form).entries());
+    const formData = Object.fromEntries(new FormData(form).entries());
     const { data: { user } } = await supabase.auth.getUser();
 
     const payload = {
-      ...data,
+      ...formData,
       cargado_por: user.id
     };
+
+    console.log('PAYLOAD →', payload);
 
     const { error } = await supabase
       .from('productos_deportivos')
       .insert(payload);
 
     if (error) {
+      console.error(error);
       msg.textContent = error.message;
       msg.className = 'error';
     } else {
-      msg.textContent = 'Producto cargado correctamente';
+      msg.textContent = '✅ Producto cargado correctamente';
       msg.className = 'ok';
       form.reset();
     }
