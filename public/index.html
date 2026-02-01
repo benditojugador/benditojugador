@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda Deportiva - Inicio</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Deportes<span>Store</span></a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Inicio</a>
+                <a href="#productos">Productos</a>
+                <a href="#categorias">Categorías</a>
+                <a href="#contacto">Contacto</a>
+                <a href="login.html" class="btn-login">Iniciar Sesión</a>
+                <a href="#" id="adminLink" class="btn-admin" style="display:none;">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                <a href="#" id="logoutBtn" class="btn-logout" style="display:none;">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Ropa Deportiva Oficial</h1>
+            <p>Las mejores camisetas y equipamiento deportivo</p>
+            <a href="#productos" class="btn-hero">Ver Productos</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="productos" class="products-section">
+            <h2>Productos Destacados</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">Todos</button>
+                <button class="filter-btn" data-filter="futbol">Fútbol</button>
+                <button class="filter-btn" data-filter="basquet">Básquet</button>
+                <button class="filter-btn" data-filter="nacional">Nacional</button>
+                <button class="filter-btn" data-filter="club">Club</button>
+            </div>
+            <div class="products-grid" id="productsGrid">
+                <!-- Los productos se cargarán aquí con JavaScript -->
+                <div class="loading">Cargando productos...</div>
+            </div>
+        </section>
+
+        <section id="categorias" class="categories-section">
+            <h2>Categorías</h2>
+            <div class="categories-grid">
+                <div class="category-card">
+                    <i class="fas fa-futbol"></i>
+                    <h3>Fútbol</h3>
+                    <p>Camisetas oficiales y alternativas</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-basketball-ball"></i>
+                    <h3>Básquet</h3>
+                    <p>Equipos NBA y selecciones</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-baseball-ball"></i>
+                    <h3>Béisbol</h3>
+                    <p>MLB y equipos internacionales</p>
+                </div>
+                <div class="category-card">
+                    <i class="fas fa-tshirt"></i>
+                    <h3>Ropa Deportiva</h3>
+                    <p>Shorts, chaquetas y más</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contacto">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>DeportesStore</h3>
+                <p>Tu tienda de confianza para ropa deportiva oficial.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p><i class="fas fa-envelope"></i> info@deportesstore.com</p>
+                <p><i class="fas fa-phone"></i> +1 234 567 890</p>
+            </div>
+            <div class="footer-section">
+                <h3>Síguenos</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 DeportesStore. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/products.js"></script>
+</body>
+</html>

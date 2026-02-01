@@ -1,0 +1,16 @@
+{
+  "name": "sitio-deportivo",
+  "version": "1.0.0",
+  "description": "Sitio web deportivo con Supabase y Cloudflare",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "wrangler pages dev public",
+    "deploy": "wrangler pages deploy public"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  }
+}

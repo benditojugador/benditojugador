@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto - Tienda Deportiva</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Deportes<span>Store</span></a>
+            <div class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="index.html#productos">Productos</a>
+                <a href="index.html#categorias">Categorías</a>
+                <a href="index.html#contacto">Contacto</a>
+                <a href="login.html" class="btn-login">Iniciar Sesión</a>
+                <a href="#" id="adminLink" class="btn-admin" style="display:none;">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                <a href="#" id="logoutBtn" class="btn-logout" style="display:none;">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="product-page">
+        <div class="product-container">
+            <div class="breadcrumb">
+                <a href="index.html">Inicio</a> / 
+                <a href="index.html#productos">Productos</a> / 
+                <span id="productTitle">Producto</span>
+            </div>
+            
+            <div class="product-detail">
+                <div class="product-images">
+                    <div class="main-image">
+                        <img id="mainProductImage" src="" alt="Producto">
+                    </div>
+                    <div class="thumbnail-images" id="thumbnails">
+                        <!-- Las miniaturas se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <div class="product-header">
+                        <span class="product-badge" id="productOficial">Oficial</span>
+                        <h1 id="productName">Nombre del Producto</h1>
+                        <div class="product-meta">
+                            <span><i class="fas fa-tag"></i> <span id="productCategory">Categoría</span></span>
+                            <span><i class="fas fa-flag"></i> <span id="productNationality">Nacionalidad</span></span>
+                            <span><i class="fas fa-calendar"></i> <span id="productYear">Año</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-description">
+                        <h3>Descripción</h3>
+                        <p id="productDescription">Descripción del producto...</p>
+                    </div>
+                    
+                    <div class="product-specs">
+                        <h3>Especificaciones</h3>
+                        <div class="specs-grid">
+                            <div class="spec">
+                                <strong>Equipo:</strong>
+                                <span id="productTeam">-</span>
+                            </div>
+                            <div class="spec">
+                                <strong>Tipo de Ropa:</strong>
+                                <span id="productClothingType">-</span>
+                            </div>
+                            <div class="spec">
+                                <strong>Tipo de Equipo:</strong>
+                                <span id="productTeamType">-</span>
+                            </div>
+                            <div class="spec">
+                                <strong>Deporte:</strong>
+                                <span id="productSport">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-tags">
+                        <h3>Etiquetas</h3>
+                        <div class="tags-container" id="productTags">
+                            <!-- Las etiquetas se cargarán aquí -->
+                        </div>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="#" id="whatsappBtn" class="btn-whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                        </a>
+                        <button class="btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>DeportesStore</h3>
+                <p>Tu tienda de confianza para ropa deportiva oficial.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto WhatsApp</h3>
+                <p>Realiza tus pedidos por WhatsApp</p>
+                <a href="#" id="footerWhatsapp" class="btn-whatsapp-small">
+                    <i class="fab fa-whatsapp"></i> Contactar
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 DeportesStore. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/product-detail.js"></script>
+</body>
+</html>

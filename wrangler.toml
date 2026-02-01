@@ -1,0 +1,13 @@
+name = "sitio-deportivo"
+type = "webpack"
+account_id = "TU_ACCOUNT_ID"
+workers_dev = true
+route = ""
+zone_id = ""
+
+[env.production]
+name = "sitio-deportivo-prod"
+
+[site]
+bucket = "./public"
+entry-point = "./functions"
