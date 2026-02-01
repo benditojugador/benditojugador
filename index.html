@@ -20,6 +20,275 @@
             --gris-claro: #95a5a6;
         }
         
+        /* NAVBAR MODERNO */
+        .navbar-modern {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.8rem 0;
+        }
+
+        .nav-container-modern {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        /* Logo moderno */
+        .logo-modern {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+
+        .logo-image img {
+            height: 45px;
+            width: auto;
+            border-radius: 8px;
+        }
+
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
+
+        .logo-main {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #2c3e50;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-sub {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #9c1d26;
+            letter-spacing: 1px;
+        }
+
+        /* Navegación principal */
+        .nav-main {
+            display: flex;
+            gap: 0.5rem;
+            flex-grow: 1;
+            justify-content: center;
+            max-width: 600px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.8rem 1.2rem;
+            color: #5a6c7d;
+            text-decoration: none;
+            font-weight: 500;
+            border-radius: 10px;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: #9c1d26;
+            background: rgba(156, 29, 38, 0.05);
+        }
+
+        .nav-link.active {
+            color: #9c1d26;
+            background: rgba(156, 29, 38, 0.1);
+            font-weight: 600;
+        }
+
+        .nav-link.active:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 3px;
+            background: #fed05d;
+            border-radius: 2px;
+        }
+
+        .nav-link i {
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Acciones de usuario */
+        .nav-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .nav-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.2rem;
+            background: #f8f9fa;
+            color: #5a6c7d;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 500;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .nav-action-btn:hover {
+            background: white;
+            border-color: #9c1d26;
+            color: #9c1d26;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(156, 29, 38, 0.1);
+        }
+
+        .nav-action-btn.admin {
+            background: rgba(254, 208, 93, 0.1);
+            color: #b8860b;
+            border-color: #fed05d;
+        }
+
+        .nav-action-btn.logout {
+            background: rgba(231, 76, 60, 0.1);
+            color: #c0392b;
+            border-color: #e74c3c;
+        }
+
+        /* Menú móvil */
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #2c3e50;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu {
+            display: none;
+            background: white;
+            padding: 1rem;
+            border-top: 1px solid #eee;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .mobile-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            color: #5a6c7d;
+            text-decoration: none;
+            border-bottom: 1px solid #f5f5f5;
+            font-weight: 500;
+        }
+
+        .mobile-link:last-child {
+            border-bottom: none;
+        }
+
+        .mobile-link.active {
+            color: #9c1d26;
+            background: rgba(156, 29, 38, 0.05);
+            border-radius: 8px;
+        }
+
+        .mobile-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .mobile-actions {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mobile-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 1rem;
+            background: #f8f9fa;
+            color: #5a6c7d;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .mobile-action-btn.admin {
+            background: rgba(254, 208, 93, 0.1);
+            color: #b8860b;
+        }
+
+        /* Responsive navbar */
+        @media (max-width: 1024px) {
+            .nav-main {
+                gap: 0.3rem;
+            }
+            
+            .nav-link {
+                padding: 0.7rem 1rem;
+            }
+            
+            .nav-link span {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-container-modern {
+                padding: 0 1rem;
+            }
+            
+            .nav-main {
+                display: none;
+            }
+            
+            .nav-actions {
+                display: none;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .mobile-menu.active {
+                display: block;
+            }
+            
+            .logo-text {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container-modern {
+                padding: 0 0.5rem;
+            }
+            
+            .logo-image img {
+                height: 40px;
+            }
+        }
+        
         /* Hero moderno */
         .modern-hero {
             background: linear-gradient(rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.9)),
@@ -68,6 +337,7 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
+            text-decoration: none;
         }
         
         .btn-primary:hover {
@@ -85,6 +355,10 @@
             border: 2px solid white;
             cursor: pointer;
             transition: all 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
         }
         
         .btn-secondary:hover {
@@ -178,23 +452,32 @@
             flex-grow: 1;
         }
         
-        .product-price {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--rojo);
-            margin-bottom: 1rem;
-        }
-        
         .product-meta {
             display: flex;
             gap: 1rem;
             font-size: 0.9rem;
             color: var(--gris-claro);
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
         
         .product-meta span {
             display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        
+        .product-status {
+            margin-bottom: 1rem;
+        }
+        
+        .status-badge {
+            background: #27ae60;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            display: inline-flex;
             align-items: center;
             gap: 0.3rem;
         }
@@ -363,7 +646,7 @@
             transform: translateY(-3px);
         }
         
-        /* Responsive */
+        /* Responsive general */
         @media (max-width: 768px) {
             .modern-hero h1 {
                 font-size: 2.5rem;
@@ -387,25 +670,82 @@
     </style>
 </head>
 <body>
-    <!-- Navbar Minimalista -->
-    <nav class="navbar" style="background: white; box-shadow: 0 2px 20px rgba(0,0,0,0.1);">
-        <div class="nav-container">
-            <a href="index.html" class="logo">
-                <img src="images/icon.png" alt="Bendito Jugador Logo" style="height: 45px;">
+    <!-- Navbar Moderno -->
+    <nav class="navbar-modern">
+        <div class="nav-container-modern">
+            <!-- Logo + Nombre alineados -->
+            <a href="index.html" class="logo-modern">
+                <div class="logo-image">
+                    <img src="images/icon.png" alt="Bendito Jugador">
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">BENDITO</span>
+                    <span class="logo-sub">JUGADOR</span>
+                </div>
             </a>
-            <div class="nav-links">
-                <a href="index.html" class="active" style="color: var(--gris);">Inicio</a>
-                <a href="#productos" style="color: var(--gris);">Productos</a>
-                <a href="#categorias" style="color: var(--gris);">Categorías</a>
-                <a href="#contacto" style="color: var(--gris);">Contacto</a>
-                <a href="login.html" class="btn-login" id="loginBtn" style="background: var(--rojo);">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+
+            <!-- Navegación principal -->
+            <div class="nav-main">
+                <a href="index.html" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
                 </a>
-                <a href="admin/dashboard.html" id="adminLink" class="btn-admin" style="display:none; background: var(--dorado); color: var(--gris);">
-                    <i class="fas fa-cog"></i> Panel
+                <a href="#productos" class="nav-link">
+                    <i class="fas fa-tshirt"></i>
+                    <span>Productos</span>
                 </a>
-                <a href="#" id="logoutBtn" class="btn-logout" style="display:none;">
+                <a href="#categorias" class="nav-link">
+                    <i class="fas fa-tags"></i>
+                    <span>Categorías</span>
+                </a>
+                <a href="#contacto" class="nav-link">
+                    <i class="fas fa-phone"></i>
+                    <span>Contacto</span>
+                </a>
+            </div>
+
+            <!-- Acciones de usuario (derecha) -->
+            <div class="nav-actions">
+                <a href="login.html" class="nav-action-btn" id="loginBtn">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Ingresar</span>
+                </a>
+                <a href="admin/dashboard.html" class="nav-action-btn admin" id="adminLink" style="display: none;">
+                    <i class="fas fa-cog"></i>
+                    <span>Panel</span>
+                </a>
+                <a href="#" class="nav-action-btn logout" id="logoutBtn" style="display: none;">
                     <i class="fas fa-sign-out-alt"></i>
+                    <span>Salir</span>
+                </a>
+            </div>
+
+            <!-- Menú móvil -->
+            <button class="mobile-toggle" id="mobileToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Menú móvil (oculto) -->
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="index.html" class="mobile-link active">
+                <i class="fas fa-home"></i> Inicio
+            </a>
+            <a href="#productos" class="mobile-link">
+                <i class="fas fa-tshirt"></i> Productos
+            </a>
+            <a href="#categorias" class="mobile-link">
+                <i class="fas fa-tags"></i> Categorías
+            </a>
+            <a href="#contacto" class="mobile-link">
+                <i class="fas fa-phone"></i> Contacto
+            </a>
+            <div class="mobile-actions">
+                <a href="login.html" class="mobile-action-btn" id="mobileLoginBtn">
+                    <i class="fas fa-user-circle"></i> Ingresar
+                </a>
+                <a href="admin/dashboard.html" class="mobile-action-btn admin" id="mobileAdminLink" style="display: none;">
+                    <i class="fas fa-cog"></i> Panel Admin
                 </a>
             </div>
         </div>
@@ -432,7 +772,7 @@
         <h2>Productos Destacados</h2>
         <div class="swiper">
             <div class="swiper-wrapper" id="productsCarousel">
-                <!-- Los productos se cargarán aquí -->
+                <!-- Producto 1 -->
                 <div class="swiper-slide">
                     <div class="product-card">
                         <div class="product-image">
@@ -445,10 +785,96 @@
                             <div class="product-meta">
                                 <span><i class="fas fa-flag"></i> Argentino</span>
                                 <span><i class="fas fa-calendar"></i> 2022</span>
+                                <span><i class="fas fa-tshirt"></i> Camiseta</span>
                             </div>
-                            <div class="product-price">$89.990</div>
-                            <a href="producto.html?id=1" class="btn-primary" style="padding: 0.8rem; font-size: 1rem;">
-                                Ver Detalles
+                            <div class="product-status">
+                                <span class="status-badge">
+                                    <i class="fas fa-check-circle"></i> En stock
+                                </span>
+                            </div>
+                            <a href="producto.html?id=1" class="btn-primary" style="padding: 0.8rem; font-size: 1rem; margin-top: 1rem; text-align: center; justify-content: center;">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 2 -->
+                <div class="swiper-slide">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b33e6246-4628-4c82-9855-6de8ab3aac9d/brasil-2023-away-dri-fit-advanced-football-shirt-0WrPsx.png" alt="Brasil 2023">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-badge">Alternativa</span>
+                            <h3 class="product-title">Brasil 2023</h3>
+                            <p class="product-description">Camiseta alternativa amarilla de Brasil. Diseño exclusivo y moderno.</p>
+                            <div class="product-meta">
+                                <span><i class="fas fa-flag"></i> Brasileño</span>
+                                <span><i class="fas fa-calendar"></i> 2023</span>
+                                <span><i class="fas fa-tshirt"></i> Camiseta</span>
+                            </div>
+                            <div class="product-status">
+                                <span class="status-badge">
+                                    <i class="fas fa-check-circle"></i> En stock
+                                </span>
+                            </div>
+                            <a href="producto.html?id=2" class="btn-primary" style="padding: 0.8rem; font-size: 1rem; margin-top: 1rem; text-align: center; justify-content: center;">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 3 -->
+                <div class="swiper-slide">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/5e5b48f9925b40e0ad44afd9013a4d81_9366/Camiseta_Manchester_United_23-24_Titular_Rojo_IB8175_01_laydown.jpg" alt="Manchester United">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-badge">Oficial</span>
+                            <h3 class="product-title">Manchester United</h3>
+                            <p class="product-description">Camiseta oficial temporada 2023/24. Tercera equipación roja.</p>
+                            <div class="product-meta">
+                                <span><i class="fas fa-flag"></i> Inglés</span>
+                                <span><i class="fas fa-calendar"></i> 2023</span>
+                                <span><i class="fas fa-tshirt"></i> Camiseta</span>
+                            </div>
+                            <div class="product-status">
+                                <span class="status-badge">
+                                    <i class="fas fa-check-circle"></i> En stock
+                                </span>
+                            </div>
+                            <a href="producto.html?id=3" class="btn-primary" style="padding: 0.8rem; font-size: 1rem; margin-top: 1rem; text-align: center; justify-content: center;">
+                                <i class="fas fa-eye"></i> Ver Detalles
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Producto 4 -->
+                <div class="swiper-slide">
+                    <div class="product-card">
+                        <div class="product-image">
+                            <img src="https://images.footballfanatics.com/los-angeles-lakers/mens-nike-purple-los-angeles-lakers-2023-24-icon-edition-swingman-jersey_ss5_p-12063511+u-1hcvscs6nx9lkjt9v5i9+v-8f4c71692fe64e80ae99e10052ebc7b6.jpg?_hv=2&w=900" alt="Los Angeles Lakers">
+                        </div>
+                        <div class="product-info">
+                            <span class="product-badge">Oficial</span>
+                            <h3 class="product-title">Los Angeles Lakers</h3>
+                            <p class="product-description">Camiseta oficial de los Lakers temporada 2023/24. Edición especial.</p>
+                            <div class="product-meta">
+                                <span><i class="fas fa-flag"></i> Estadounidense</span>
+                                <span><i class="fas fa-calendar"></i> 2023</span>
+                                <span><i class="fas fa-tshirt"></i> Camiseta</span>
+                            </div>
+                            <div class="product-status">
+                                <span class="status-badge">
+                                    <i class="fas fa-check-circle"></i> En stock
+                                </span>
+                            </div>
+                            <a href="producto.html?id=4" class="btn-primary" style="padding: 0.8rem; font-size: 1rem; margin-top: 1rem; text-align: center; justify-content: center;">
+                                <i class="fas fa-eye"></i> Ver Detalles
                             </a>
                         </div>
                     </div>
@@ -572,61 +998,64 @@
                 }
             });
             
-            // Cargar productos dinámicamente
-            loadProductsForCarousel();
-        });
-        
-        // Función para cargar productos en el carrusel
-        async function loadProductsForCarousel() {
-            try {
-                // Aquí integrarías con Supabase
-                // Por ahora datos de ejemplo
-                const sampleProducts = [
-                    {
-                        id: 1,
-                        equipo: 'Argentina',
-                        tipo_ropa: 'Camiseta',
-                        oficial_alternativa: 'Oficial',
-                        año: 2022,
-                        nacionalidad: 'Argentino',
-                        descripcion: 'Camiseta oficial campeona del mundo',
-                        portada: 'https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2ce4e8c0f97b4d4c8683af8a00fb8f4b_9366/Camiseta_Titular_Seleccion_Argentina_22_Messi_Blanco_HF0652_01_laydown.jpg',
-                        precio: 89990
-                    },
-                    {
-                        id: 2,
-                        equipo: 'Brasil',
-                        tipo_ropa: 'Camiseta',
-                        oficial_alternativa: 'Alternativa',
-                        año: 2023,
-                        nacionalidad: 'Brasileño',
-                        descripcion: 'Camiseta alternativa amarilla',
-                        portada: 'https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/b33e6246-4628-4c82-9855-6de8ab3aac9d/brasil-2023-away-dri-fit-advanced-football-shirt-0WrPsx.png',
-                        precio: 79990
-                    },
-                    {
-                        id: 3,
-                        equipo: 'Manchester United',
-                        tipo_ropa: 'Camiseta',
-                        oficial_alternativa: 'Oficial',
-                        año: 2023,
-                        nacionalidad: 'Inglés',
-                        descripcion: 'Camiseta oficial temporada 2023/24',
-                        portada: 'https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/5e5b48f9925b40e0ad44afd9013a4d81_9366/Camiseta_Manchester_United_23-24_Titular_Rojo_IB8175_01_laydown.jpg',
-                        precio: 94990
+            // Control del menú móvil
+            const mobileToggle = document.getElementById('mobileToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            if (mobileToggle && mobileMenu) {
+                mobileToggle.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('active');
+                });
+                
+                // Cerrar al hacer clic fuera
+                document.addEventListener('click', function(event) {
+                    if (!mobileToggle.contains(event.target) && !mobileMenu.contains(event.target)) {
+                        mobileMenu.classList.remove('active');
                     }
-                ];
-                
-                const carousel = document.getElementById('productsCarousel');
-                if (carousel) {
-                    // Aquí agregarías la lógica para cargar desde Supabase
-                    console.log('Cargar productos desde Supabase aquí');
-                }
-                
-            } catch (error) {
-                console.error('Error cargando productos:', error);
+                });
             }
-        }
+            
+            // Sincronizar estado de login
+            function updateLoginState() {
+                const user = JSON.parse(localStorage.getItem('currentUser'));
+                const loginBtn = document.getElementById('loginBtn');
+                const adminLink = document.getElementById('adminLink');
+                const logoutBtn = document.getElementById('logoutBtn');
+                const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+                const mobileAdminLink = document.getElementById('mobileAdminLink');
+                
+                if (user && user.loggedIn) {
+                    // Ocultar login
+                    if (loginBtn) loginBtn.style.display = 'none';
+                    if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
+                    
+                    // Mostrar admin
+                    if (adminLink) {
+                        adminLink.style.display = 'flex';
+                        adminLink.querySelector('span').textContent = user.rol;
+                    }
+                    if (mobileAdminLink) {
+                        mobileAdminLink.style.display = 'flex';
+                        mobileAdminLink.querySelector('span').textContent = user.rol;
+                    }
+                    
+                    // Mostrar logout
+                    if (logoutBtn) logoutBtn.style.display = 'flex';
+                }
+            }
+            
+            updateLoginState();
+            
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    localStorage.removeItem('currentUser');
+                    window.location.reload();
+                });
+            }
+        });
     </script>
 </body>
 </html>
