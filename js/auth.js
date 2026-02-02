@@ -3,69 +3,42 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-console.log('✅ Supabase client created')
-
-// ⬅️ EXPORTAR DESPUÉS DE CREARLO
-export { supabase }
-
-// ================= LOGIN =================
-async function handleLogin(email, password, role) {
-    try {
-        console.log('🔑 Intentando login con Supabase JS...', { email, role })
-        
-        const { data, error } = await supabase
-            .from('usuarios')
-            .select('*')
-            .eq('email', email)
-            .eq('password', password)
-            .eq('rol', role)
-            .single()
-
-        if (error) {
-            if (error.code === 'PGRST116') {
-                throw new Error('Credenciales incorrectas')
-            }
-            throw new Error(error.message)
-        }
-
-        localStorage.setItem('currentUser', JSON.stringify({
-            id: data.id,
-            email: data.email,
-            rol: data.rol,
-            nombre: data.nombre,
-            loggedIn: true
-        }))
-
-        if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
-            window.location.href = 'admin/dashboard.html'
-        } else {
-            window.location.href = 'index.html'
-        }
-
-        return { success: true }
-
-    } catch (error) {
-        return { success: false, message: error.message }
-    }
+// ====== helpers de sesión ======
+export function setCurrentUser(userRow) {
+  localStorage.setItem('currentUser', JSON.stringify({
+    id: userRow.id,
+    email: userRow.email,
+    rol: userRow.rol,
+    loggedIn: true
+  }))
 }
 
-// ================= HELPERS =================
-function handleLogout() {
-    localStorage.removeItem('currentUser')
-    window.location.href = 'index.html'
+export function getCurrentUser() {
+  const s = localStorage.getItem('currentUser')
+  return s ? JSON.parse(s) : null
 }
 
-function getCurrentUser() {
-    const userStr = localStorage.getItem('currentUser')
-    return userStr ? JSON.parse(userStr) : null
+export function logout() {
+  localStorage.removeItem('currentUser')
+  window.location.href = 'index.html'
 }
 
-// ================= INIT =================
-document.addEventListener('DOMContentLoaded', async () => {
-    const user = getCurrentUser()
-    if (window.location.pathname.includes('admin') && (!user || !user.loggedIn)) {
-        window.location.href = 'login.html'
-    }
-})
+// ====== login (simple) ======
+export async function login(email, password, role) {
+  const { data, error } = await supabase
+    .from('usuarios')
+    .select('*')
+    .eq('email', email)
+    .eq('password', password)
+    .eq('rol', role)
+    .single()
+
+  if (error || !data) {
+    throw new Error('Credenciales incorrectas')
+  }
+
+  setCurrentUser(data)
+  return data
+}
