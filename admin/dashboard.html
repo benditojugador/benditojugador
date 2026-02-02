@@ -2,154 +2,88 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard | Cargar producto</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <style>
-    body {
-      font-family: system-ui, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      padding: 30px;
-    }
-    form {
-      max-width: 720px;
-      background: #020617;
-      padding: 20px;
-      border-radius: 8px;
-    }
-    label { display: block; margin-top: 12px; }
-    input, textarea {
-      width: 100%;
-      margin-top: 6px;
-      padding: 10px;
-      border-radius: 6px;
-      border: none;
-      background: #020617;
-      color: #e5e7eb;
-      outline: 1px solid #1e293b;
-    }
-    button {
-      margin-top: 20px;
-      padding: 12px;
-      width: 100%;
-      background: #22c55e;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .ok { color: #4ade80; margin-top: 15px; }
-    .error { color: #f87171; margin-top: 15px; }
-  
-    .topnav{display:flex;gap:10px;align-items:center;margin-bottom:18px}
-    .navlink{background:#111827;color:#e5e7eb;border:1px solid #334155;padding:10px 14px;border-radius:12px;text-decoration:none;cursor:pointer}
-    .navlink:hover{border-color:#64748b}
-    .navlink.danger{background:#7f1d1d;border-color:#b91c1c}
-    @media (max-width:640px){.topnav{flex-wrap:wrap}}
-</style>
+  <title>Dashboard | Bendito Jugador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/styles.css" />
 </head>
-
 <body>
-  <div class="topnav">
-    <a href="dashboard.html" class="navlink">📦 Productos</a>
-    <a href="mayoristas.html" class="navlink" id="navMayoristas">👥 Mayoristas</a>
-    <button class="navlink danger" id="btnLogout" type="button">Salir</button>
+
+  <!-- Header -->
+  <header class="admin-header">
+    <h1 id="dashboardTitle">Dashboard</h1>
+    <button id="logoutBtn" class="btn-danger">Salir</button>
+  </header>
+
+  <!-- Layout -->
+  <div class="admin-layout">
+
+    <!-- Sidebar -->
+    <aside class="admin-sidebar">
+      <ul id="sidebarMenu">
+        <!-- Se arma por JS según rol -->
+      </ul>
+    </aside>
+
+    <!-- Contenido -->
+    <main class="admin-content">
+
+      <!-- Categorías -->
+      <section id="sectionCategorias" class="admin-section hidden">
+        <h2>Categorías</h2>
+        <p>Gestión de categorías (crear / editar / borrar)</p>
+      </section>
+
+      <!-- Cargar producto -->
+      <section id="sectionNuevoProducto" class="admin-section hidden">
+        <h2>Cargar producto</h2>
+        <form id="productForm">
+          <input type="text" placeholder="Nombre del producto" />
+          <input type="text" placeholder="Categoría" />
+          <input type="text" placeholder="Equipo" />
+          <input type="text" placeholder="Tipo de ropa" />
+          <textarea placeholder="Descripción"></textarea>
+
+          <input type="text" placeholder="Imagen portada (URL)" />
+          <input type="text" placeholder="Imagen 1 (URL)" />
+          <input type="text" placeholder="Imagen 2 (URL)" />
+
+          <label>
+            <input type="checkbox" />
+            Visible en catálogo
+          </label>
+
+          <button type="submit" class="btn-primary">Guardar producto</button>
+        </form>
+      </section>
+
+      <!-- Productos -->
+      <section id="sectionProductos" class="admin-section hidden">
+        <h2>Productos</h2>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th>Visible</th>
+              <th>Operador</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="productosTable">
+            <!-- JS -->
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Mayoristas (solo admin) -->
+      <section id="sectionMayoristas" class="admin-section hidden">
+        <h2>Mayoristas</h2>
+        <p>Listado y contacto de mayoristas</p>
+      </section>
+
+    </main>
   </div>
 
-
-<h1>📦 Cargar producto deportivo</h1>
-
-<form id="producto-form" method="post" action="javascript:void(0);">
-  <label>Oficial / Alternativa</label>
-  <input name="oficial_alternativa" required />
-
-  <label>Año</label>
-  <input name="año" type="number" />
-
-  <label>Equipo</label>
-  <input name="equipo" required />
-
-  <label>Tipo de ropa</label>
-  <input name="tipo_ropa" required />
-
-  <label>Tipo de equipo</label>
-  <input name="tipo_equipo" required />
-
-  <label>Nacionalidad</label>
-  <input name="nacionalidad" required />
-
-  <label>Deporte</label>
-  <input name="deporte" required />
-
-  <label>Etiquetas</label>
-  <input name="etiquetas" required />
-
-  <label>Descripción</label>
-  <textarea name="descripcion"></textarea>
-
-  <label>Portada (URL)</label>
-  <input name="portada" />
-
-  <label>Img 1</label><input name="img1" />
-  <label>Img 2</label><input name="img2" />
-  <label>Img 3</label><input name="img3" />
-  <label>Img 4</label><input name="img4" />
-  <label>Img 5</label><input name="img5" />
-
-  <button type="submit">Guardar producto</button>
-  <div id="msg"></div>
-</form>
-
-<script type="module">
-  import { supabase, requireAuth, logout } from "../js/auth.js";
-
-  const form = document.getElementById("producto-form");
-  const msg = document.getElementById("msg");
-
-  // 🔐 Validar usuario desde localStorage (tu sistema actual)
-  const user = requireAuth(["ADMINISTRADOR","OPERADOR"]);
-
-  if (!user) return;
-
-  // Solo el admin ve Mayoristas
-  const navMayoristas = document.getElementById("navMayoristas");
-  if (navMayoristas && user.rol !== "ADMINISTRADOR") navMayoristas.style.display = "none";
-
-  // Logout
-  const btnLogout = document.getElementById("btnLogout");
-  btnLogout?.addEventListener("click", logout);
-
-  // 📤 Submit
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    msg.textContent = "";
-    msg.className = "";
-
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    const payload = {
-      ...data,
-      cargado_por: user.id
-    };
-
-    console.log("PAYLOAD →", payload);
-
-    const { error } = await supabase
-      .from("productos_deportivos")
-      .insert(payload);
-
-    if (error) {
-      console.error(error);
-      msg.textContent = error.message;
-      msg.className = "error";
-    } else {
-      msg.textContent = "✅ Producto cargado correctamente";
-      msg.className = "ok";
-      form.reset();
-    }
-  });
-</script>
-
+  <script type="module" src="../js/admin/dashboard.js"></script>
 </body>
 </html>
