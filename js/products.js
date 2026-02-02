@@ -1,3 +1,5 @@
+import { supabase } from './auth.js'
+
 // Cargar productos en la página principal
 async function loadProducts(filter = 'all') {
     const productsGrid = document.getElementById('productsGrid');

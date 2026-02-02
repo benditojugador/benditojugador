@@ -41,10 +41,22 @@
     }
     .ok { color: #4ade80; margin-top: 15px; }
     .error { color: #f87171; margin-top: 15px; }
-  </style>
+  
+    .topnav{display:flex;gap:10px;align-items:center;margin-bottom:18px}
+    .navlink{background:#111827;color:#e5e7eb;border:1px solid #334155;padding:10px 14px;border-radius:12px;text-decoration:none;cursor:pointer}
+    .navlink:hover{border-color:#64748b}
+    .navlink.danger{background:#7f1d1d;border-color:#b91c1c}
+    @media (max-width:640px){.topnav{flex-wrap:wrap}}
+</style>
 </head>
 
 <body>
+  <div class="topnav">
+    <a href="dashboard.html" class="navlink">📦 Productos</a>
+    <a href="mayoristas.html" class="navlink" id="navMayoristas">👥 Mayoristas</a>
+    <button class="navlink danger" id="btnLogout" type="button">Salir</button>
+  </div>
+
 
 <h1>📦 Cargar producto deportivo</h1>
 
@@ -90,22 +102,23 @@
 </form>
 
 <script type="module">
-  import { supabase } from "../js/auth.js";
+  import { supabase, requireAuth, logout } from "../js/auth.js";
 
   const form = document.getElementById("producto-form");
   const msg = document.getElementById("msg");
 
   // 🔐 Validar usuario desde localStorage (tu sistema actual)
-  const user = JSON.parse(localStorage.getItem("currentUser"));
+  const user = requireAuth(["ADMINISTRADOR","OPERADOR"]);
 
-  if (!user || !user.loggedIn) {
-    window.location.href = "../login.html";
-  }
+  if (!user) return;
 
-  if (!["ADMINISTRADOR", "OPERADOR"].includes(user.rol)) {
-    alert("Acceso denegado");
-    window.location.href = "../index.html";
-  }
+  // Solo el admin ve Mayoristas
+  const navMayoristas = document.getElementById("navMayoristas");
+  if (navMayoristas && user.rol !== "ADMINISTRADOR") navMayoristas.style.display = "none";
+
+  // Logout
+  const btnLogout = document.getElementById("btnLogout");
+  btnLogout?.addEventListener("click", logout);
 
   // 📤 Submit
   form.addEventListener("submit", async (e) => {

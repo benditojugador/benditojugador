@@ -1,3 +1,5 @@
+import { supabase } from './auth.js'
+
 // Cargar detalles del producto
 async function loadProductDetails() {
     // Obtener ID del producto de la URL

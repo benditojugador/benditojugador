@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault()
     msg.textContent = ''
+    msg.className = 'message'
 
     const email = document.getElementById('email').value.trim()
     const password = document.getElementById('password').value.trim()
@@ -18,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await login(email, password, role)
       window.location.href = 'admin/dashboard.html'
     } catch (err) {
-      msg.textContent = err.message
+      msg.textContent = err.message || 'Error al iniciar sesión'
       msg.className = 'message error'
     }
   })
