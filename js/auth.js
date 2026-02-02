@@ -5,6 +5,12 @@ const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
 
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
+// ✅ Compatibilidad: algunos scripts antiguos esperaban window.supabase
+// para “detectar” que el cliente ya está inicializado.
+if (typeof window !== 'undefined') {
+  window.supabase = supabase
+}
+
 // ---------------- Session helpers ----------------
 export function setCurrentUser(userRow) {
   localStorage.setItem('currentUser', JSON.stringify({
