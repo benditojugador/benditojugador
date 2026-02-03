@@ -1,163 +1,93 @@
-/**
- * products.js
- * Catálogo público – Bendito Jugador
- *
- * Responsabilidad ÚNICA:
- * - Traer productos visibles desde Supabase
- * - Renderizarlos en el catálogo
- *
- * NO hace:
- * - login
- * - métricas
- * - roles
- * - admin
- *
- * Si algo falla, muestra mensaje y NO rompe.
- */
-
-import { supabase } from './auth.js'
-
-/* ===============================
-   CONFIGURACIÓN
-================================ */
-
-const CONTAINER_ID = 'productsCarousel'
-const PLACEHOLDER_IMG = 'assets/placeholder.png' // imagen local obligatoria
-
-/* ===============================
-   UTILIDADES
-================================ */
-
-function $(id) {
-  return document.getElementById(id)
+// Cargar productos en la página principal
+async function loadProducts(filter = 'all') {
+    const productsGrid = document.getElementById('productsGrid');
+    if (!productsGrid) return;
+    
+    productsGrid.innerHTML = '<div class="loading">Cargando productos...</div>';
+    
+    try {
+        const { data: productos, error } = await supabase
+            .from('productos_deportivos')
+            .select('*')
+            .order('created_at', { ascending: false });
+        
+        if (error) throw error;
+        
+        if (!productos || productos.length === 0) {
+            productsGrid.innerHTML = '<div class="no-products">No hay productos disponibles</div>';
+            return;
+        }
+        
+        // Filtrar productos si es necesario
+        let filteredProducts = productos;
+        if (filter !== 'all') {
+            filteredProducts = productos.filter(product => {
+                if (filter === 'futbol') return product.deporte === 'Futbol';
+                if (filter === 'basquet') return product.deporte === 'Basquet';
+                if (filter === 'nacional') return product.tipo_equipo === 'Nacional';
+                if (filter === 'club') return product.tipo_equipo === 'Club';
+                return true;
+            });
+        }
+        
+        // Generar HTML de productos
+        productsGrid.innerHTML = filteredProducts.map(product => `
+            <div class="product-card" data-id="${product.id}">
+                <div class="product-image">
+                    <img src="${product.portada || 'https://via.placeholder.com/300x200?text=Sin+Imagen'}" 
+                         alt="${product.equipo} - ${product.tipo_ropa}">
+                </div>
+                <div class="product-info">
+                    <h3>${product.equipo} - ${product.tipo_ropa}</h3>
+                    <div class="product-meta">
+                        <span><i class="fas fa-calendar"></i> ${product.año || 'N/A'}</span>
+                        <span><i class="fas fa-flag"></i> ${product.nacionalidad}</span>
+                    </div>
+                    <div class="product-price">${product.oficial_alternativa}</div>
+                    <a href="producto.html?id=${product.id}" class="btn-view">
+                        <i class="fas fa-eye"></i> Ver Detalles
+                    </a>
+                </div>
+            </div>
+        `).join('');
+        
+    } catch (error) {
+        console.error('Error cargando productos:', error);
+        productsGrid.innerHTML = '<div class="error">Error al cargar los productos</div>';
+    }
 }
 
-function safe(text) {
-  return String(text ?? '')
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
+// Inicializar filtros
+function initFilters() {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    filterButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remover clase active de todos los botones
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            button.classList.add('active');
+            // Cargar productos con el filtro seleccionado
+            const filter = button.getAttribute('data-filter');
+            loadProducts(filter);
+        });
+    });
 }
 
-function buildTitle(p) {
-  // Ej: "Camiseta Boca Juniors 2024"
-  const parts = []
-  if (p.tipo_ropa) parts.push(p.tipo_ropa)
-  if (p.equipo) parts.push(p.equipo)
-  if (p.año) parts.push(p.año)
-  return parts.join(' ') || 'Producto'
-}
-
-function pickImage(p) {
-  const imgs = [
-    p.portada,
-    p.img1,
-    p.img2,
-    p.img3,
-    p.img4,
-    p.img5
-  ].filter(Boolean)
-
-  return imgs[0] || PLACEHOLDER_IMG
-}
-
-/* ===============================
-   RENDER
-================================ */
-
-function renderMessage(title, text) {
-  const container = $(CONTAINER_ID)
-  if (!container) return
-
-  container.innerHTML = `
-    <div class="catalog-message">
-      <h3>${safe(title)}</h3>
-      <p>${safe(text)}</p>
-    </div>
-  `
-}
-
-function renderProducts(products) {
-  const container = $(CONTAINER_ID)
-  if (!container) return
-
-  container.innerHTML = products.map(p => {
-    const title = buildTitle(p)
-    const img = pickImage(p)
-
-    return `
-      <div class="product-card">
-        <div class="product-image">
-          <img 
-            src="${safe(img)}"
-            alt="${safe(title)}"
-            loading="lazy"
-            onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'"
-          >
-        </div>
-
-        <div class="product-info">
-          <h3>${safe(title)}</h3>
-          <a href="producto.html?id=${p.id}" class="btn-detail">
-            Ver detalle →
-          </a>
-        </div>
-      </div>
-    `
-  }).join('')
-}
-
-/* ===============================
-   DATA
-================================ */
-
-async function loadProducts() {
-  const container = $(CONTAINER_ID)
-  if (!container) return
-
-  renderMessage('Cargando productos…', 'Un momento por favor')
-
-  const { data, error } = await supabase
-    .from('productos_deportivos')
-    .select(`
-      id,
-      equipo,
-      tipo_ropa,
-      año,
-      descripcion,
-      portada,
-      img1,
-      img2,
-      img3,
-      img4,
-      img5,
-      visible,
-      created_at
-    `)
-    .eq('visible', true)
-    .order('created_at', { ascending: false })
-
-  if (error) {
-    renderMessage(
-      'No se pudo cargar el catálogo',
-      'Revisá la conexión con Supabase o las políticas de acceso'
-    )
-    return
-  }
-
-  if (!data || data.length === 0) {
-    renderMessage(
-      'Sin productos',
-      'Todavía no hay productos visibles en el catálogo'
-    )
-    return
-  }
-
-  renderProducts(data)
-}
-
-/* ===============================
-   INIT
-================================ */
-
-document.addEventListener('DOMContentLoaded', loadProducts)
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', async () => {
+    // Esperar a que Supabase se inicialice
+    await new Promise(resolve => {
+        const checkSupabase = setInterval(() => {
+            if (window.supabase) {
+                clearInterval(checkSupabase);
+                resolve();
+            }
+        }, 100);
+    });
+    
+    // Cargar productos
+    await loadProducts();
+    
+    // Inicializar filtros
+    initFilters();
+});

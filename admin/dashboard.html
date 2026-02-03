@@ -2,128 +2,141 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard | Bendito Jugador</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="../css/styles.css" />
+  <title>Dashboard | Cargar producto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      padding: 30px;
+    }
+    form {
+      max-width: 720px;
+      background: #020617;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    label { display: block; margin-top: 12px; }
+    input, textarea {
+      width: 100%;
+      margin-top: 6px;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #020617;
+      color: #e5e7eb;
+      outline: 1px solid #1e293b;
+    }
+    button {
+      margin-top: 20px;
+      padding: 12px;
+      width: 100%;
+      background: #22c55e;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .ok { color: #4ade80; margin-top: 15px; }
+    .error { color: #f87171; margin-top: 15px; }
+  </style>
 </head>
-<body class="admin-page">
 
-  <!-- Header -->
-  <header class="admin-header">
-    <h1 id="dashboardTitle">Dashboard</h1>
-    <button id="logoutBtn" class="btn-danger">Salir</button>
-  </header>
+<body>
 
-  <!-- Layout -->
-  <div class="admin-layout">
+<h1>📦 Cargar producto deportivo</h1>
 
-    <!-- Sidebar -->
-    <aside class="admin-sidebar">
-      <ul id="sidebarMenu">
-        <!-- Se arma por JS según rol -->
-      </ul>
-    </aside>
+<form id="producto-form" method="post" action="javascript:void(0);">
+  <label>Oficial / Alternativa</label>
+  <input name="oficial_alternativa" required />
 
-    <!-- Contenido -->
-    <main class="admin-content">
+  <label>Año</label>
+  <input name="año" type="number" />
 
-      <!-- Categorías -->
-      <section id="sectionCategorias" class="admin-section hidden">
-        <h2>Categorías</h2>
-        <p>Gestión de categorías (crear / editar / borrar)</p>
-      </section>
+  <label>Equipo</label>
+  <input name="equipo" required />
 
-      <!-- Cargar producto -->
-      <section id="sectionNuevoProducto" class="admin-section hidden">
-        <h2>Cargar producto</h2>
-        <form id="productForm" class="admin-form">
-          <select name="oficial_alternativa" class="full">
-            <option value="Oficial">Oficial</option>
-            <option value="Alternativa">Alternativa</option>
-          </select>
+  <label>Tipo de ropa</label>
+  <input name="tipo_ropa" required />
 
-          <input name="año" type="number" placeholder="Año (opcional)" />
+  <label>Tipo de equipo</label>
+  <input name="tipo_equipo" required />
 
-          <input name="equipo" type="text" placeholder="Equipo *" required />
-          <input name="tipo_ropa" type="text" placeholder="Tipo de ropa *" required />
-          <input name="tipo_equipo" type="text" placeholder="Tipo de equipo * (Nacional / Club / etc)" required />
-          <input name="nacionalidad" type="text" placeholder="Nacionalidad *" required />
-          <input name="deporte" type="text" placeholder="Deporte *" required />
+  <label>Nacionalidad</label>
+  <input name="nacionalidad" required />
 
-          <input name="etiquetas" class="full" type="text" placeholder="Etiquetas * (separadas por coma)" required />
-          <textarea name="descripcion" class="full" placeholder="Descripción (opcional)"></textarea>
+  <label>Deporte</label>
+  <input name="deporte" required />
 
-          <input name="portada" class="full" type="text" placeholder="Imagen portada (URL)" />
-          <input name="img1" type="text" placeholder="Imagen 1 (URL)" />
-          <input name="img2" type="text" placeholder="Imagen 2 (URL)" />
-          <input name="img3" type="text" placeholder="Imagen 3 (URL)" />
-          <input name="img4" type="text" placeholder="Imagen 4 (URL)" />
-          <input name="img5" type="text" placeholder="Imagen 5 (URL)" />
+  <label>Etiquetas</label>
+  <input name="etiquetas" required />
 
-          <label class="full" style="display:flex;align-items:center;gap:10px">
-            <input name="visible" type="checkbox" checked />
-            Visible en catálogo
-          </label>
+  <label>Descripción</label>
+  <textarea name="descripcion"></textarea>
 
-          <button id="btnGuardarProducto" type="submit" class="btn-primary full">Guardar producto</button>
-        </form>
-      </section>
+  <label>Portada (URL)</label>
+  <input name="portada" />
 
-      <!-- Productos -->
-      <section id="sectionProductos" class="admin-section hidden">
-        <h2>Productos</h2>
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Categoría</th>
-              <th>Visible</th>
-              <th>Operador</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody id="productosTable">
-            <!-- JS -->
-          </tbody>
-        </table>
-      </section>
+  <label>Img 1</label><input name="img1" />
+  <label>Img 2</label><input name="img2" />
+  <label>Img 3</label><input name="img3" />
+  <label>Img 4</label><input name="img4" />
+  <label>Img 5</label><input name="img5" />
 
-      <!-- Mayoristas (solo admin) -->
-      <section id="sectionMayoristas" class="admin-section hidden">
-        <h2>Mayoristas</h2>
-        <p>Listado y contacto de mayoristas</p>
-      </section>
+  <button type="submit">Guardar producto</button>
+  <div id="msg"></div>
+</form>
 
-    
-      <!-- Métricas (solo admin) -->
-      <section id="sectionMetricas" class="admin-section hidden">
-        <h2>Métricas</h2>
-        <p style="color:#94a3b8;margin-top:6px">Vistas, clicks a WhatsApp y actividad del equipo. Datos desde <strong>movimientos</strong>.</p>
+<script type="module">
+  import { supabase } from "../js/auth.js";
 
-        <div class="admin-kpis" id="kpis">
-          <!-- JS -->
-        </div>
+  const form = document.getElementById("producto-form");
+  const msg = document.getElementById("msg");
 
-        <h3 style="margin-top:16px">Últimos movimientos</h3>
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Acción</th>
-              <th>Usuario</th>
-              <th>Producto</th>
-              <th>Detalle</th>
-            </tr>
-          </thead>
-          <tbody id="movimientosTable"></tbody>
-        </table>
-      </section>
+  // 🔐 Validar usuario desde localStorage (tu sistema actual)
+  const user = JSON.parse(localStorage.getItem("currentUser"));
 
-    </main>
-  </div
+  if (!user || !user.loggedIn) {
+    window.location.href = "../login.html";
+  }
 
-  <script type="module" src="../js/admin/dashboard.js"></script>
-  <script type="module" src="../js/admin/productos-dashboard.js"></script>
-  <script type="module" src="../js/admin/metricas.js"></script>
+  if (!["ADMINISTRADOR", "OPERADOR"].includes(user.rol)) {
+    alert("Acceso denegado");
+    window.location.href = "../index.html";
+  }
+
+  // 📤 Submit
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    msg.className = "";
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    const payload = {
+      ...data,
+      cargado_por: user.id
+    };
+
+    console.log("PAYLOAD →", payload);
+
+    const { error } = await supabase
+      .from("productos_deportivos")
+      .insert(payload);
+
+    if (error) {
+      console.error(error);
+      msg.textContent = error.message;
+      msg.className = "error";
+    } else {
+      msg.textContent = "✅ Producto cargado correctamente";
+      msg.className = "ok";
+      form.reset();
+    }
+  });
+</script>
+
 </body>
 </html>

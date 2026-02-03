@@ -3,82 +3,69 @@ import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js
 const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
 const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-// ✅ Compatibilidad: algunos scripts antiguos esperaban window.supabase
-// para “detectar” que el cliente ya está inicializado.
-if (typeof window !== 'undefined') {
-  window.supabase = supabase
-}
+console.log('✅ Supabase client created')
 
-// ---------------- Session helpers ----------------
-export function setCurrentUser(userRow) {
-  localStorage.setItem('currentUser', JSON.stringify({
-    id: userRow.id,
-    email: userRow.email,
-    rol: userRow.rol,
-    nombre: userRow.nombre ?? '',
-    loggedIn: true
-  }))
-}
+// ⬅️ EXPORTAR DESPUÉS DE CREARLO
+export { supabase }
 
-export function getCurrentUser() {
-  const s = localStorage.getItem('currentUser')
-  return s ? JSON.parse(s) : null
-}
+// ================= LOGIN =================
+async function handleLogin(email, password, role) {
+    try {
+        console.log('🔑 Intentando login con Supabase JS...', { email, role })
+        
+        const { data, error } = await supabase
+            .from('usuarios')
+            .select('*')
+            .eq('email', email)
+            .eq('password', password)
+            .eq('rol', role)
+            .single()
 
-export function logout() {
-  localStorage.removeItem('currentUser')
-  // si estamos en /admin, volver al login
-  if (window.location.pathname.includes('/admin/')) {
-    window.location.href = '../login.html'
-  } else {
-    window.location.href = 'login.html'
-  }
-}
+        if (error) {
+            if (error.code === 'PGRST116') {
+                throw new Error('Credenciales incorrectas')
+            }
+            throw new Error(error.message)
+        }
 
-// ---------------- Auth (simple) ----------------
-// Nota: esto usa la tabla public.usuarios (no Supabase Auth), como venía el proyecto.
-export async function login(email, password, role) {
-  const { data, error } = await supabase
-    .from('usuarios')
-    .select('*')
-    .eq('email', email)
-    .eq('password', password)
-    .eq('rol', role)
-    .single()
+        localStorage.setItem('currentUser', JSON.stringify({
+            id: data.id,
+            email: data.email,
+            rol: data.rol,
+            nombre: data.nombre,
+            loggedIn: true
+        }))
 
-  if (error || !data) {
-    throw new Error('Credenciales incorrectas')
-  }
-  setCurrentUser(data)
-  return data
-}
+        if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
+            window.location.href = 'admin/dashboard.html'
+        } else {
+            window.location.href = 'index.html'
+        }
 
-// Protege páginas (opcional: restringir roles)
-export function requireAuth(allowedRoles = null) {
-  const user = getCurrentUser()
-  if (!user || !user.loggedIn) {
-    // si estamos en /admin, volver al login
-    if (window.location.pathname.includes('/admin/')) {
-      window.location.href = '../login.html'
-    } else {
-      window.location.href = 'login.html'
+        return { success: true }
+
+    } catch (error) {
+        return { success: false, message: error.message }
     }
-    return null
-  }
-
-  if (Array.isArray(allowedRoles) && allowedRoles.length > 0) {
-    if (!allowedRoles.includes(user.rol)) {
-      alert('No tenés permisos para entrar acá.')
-      if (window.location.pathname.includes('/admin/')) {
-        window.location.href = '../index.html'
-      } else {
-        window.location.href = 'index.html'
-      }
-      return null
-    }
-  }
-
-  return user
 }
+
+// ================= HELPERS =================
+function handleLogout() {
+    localStorage.removeItem('currentUser')
+    window.location.href = 'index.html'
+}
+
+function getCurrentUser() {
+    const userStr = localStorage.getItem('currentUser')
+    return userStr ? JSON.parse(userStr) : null
+}
+
+// ================= INIT =================
+document.addEventListener('DOMContentLoaded', async () => {
+    const user = getCurrentUser()
+    if (window.location.pathname.includes('admin') && (!user || !user.loggedIn)) {
+        window.location.href = 'login.html'
+    }
+})

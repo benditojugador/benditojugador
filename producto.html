@@ -1,171 +1,128 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <title>Detalle del producto | Bendito Jugador</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- CSS -->
-  <link rel="stylesheet" href="css/styles.css" />
-
-  <!-- Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto - Tienda Deportiva</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-
 <body>
-
-  <!-- ================= HEADER ================= -->
-  <header class="main-header">
-    <div class="container header-content">
-
-      <div class="logo">
-        <a href="index.html">
-          <img src="images/icon.png" alt="Bendito Jugador" />
-        </a>
-      </div>
-
-      <nav class="main-nav">
-        <a href="index.html">
-          <i class="fas fa-home"></i> Inicio
-        </a>
-        <a href="index.html#productos" class="active">
-          <i class="fas fa-shirt"></i> Productos
-        </a>
-      </nav>
-
-    </div>
-  </header>
-
-  <!-- ================= DETALLE ================= -->
-  <main class="container" style="padding: 32px 0">
-
-    <div id="productDetail" class="product-detail">
-      <!-- JS renderiza acá -->
-    </div>
-
-  </main>
-
-  <!-- ================= FOOTER ================= -->
-  <footer class="main-footer">
-    <div class="container footer-content">
-      <div>
-        <strong>Bendito Jugador</strong>
-        <p>Catálogo deportivo · Ventas mayoristas</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ================= SCRIPT ================= -->
-  <script type="module">
-    import { supabase } from './js/auth.js'
-
-    const PLACEHOLDER_IMG = 'assets/placeholder.png'
-    const container = document.getElementById('productDetail')
-
-    function safe(text) {
-      return String(text ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-    }
-
-    function getParam(name) {
-      return new URLSearchParams(window.location.search).get(name)
-    }
-
-    function buildTitle(p) {
-      const parts = []
-      if (p.tipo_ropa) parts.push(p.tipo_ropa)
-      if (p.equipo) parts.push(p.equipo)
-      if (p.año) parts.push(p.año)
-      return parts.join(' ') || 'Producto'
-    }
-
-    function collectImages(p) {
-      const imgs = [
-        p.portada,
-        p.img1,
-        p.img2,
-        p.img3,
-        p.img4,
-        p.img5
-      ].filter(Boolean)
-
-      return imgs.length ? imgs : [PLACEHOLDER_IMG]
-    }
-
-    async function loadProduct() {
-      const id = getParam('id')
-
-      if (!id) {
-        container.innerHTML = '<p>Producto no encontrado.</p>'
-        return
-      }
-
-      const { data, error } = await supabase
-        .from('productos_deportivos')
-        .select('*')
-        .eq('id', id)
-        .single()
-
-      if (error || !data) {
-        container.innerHTML = '<p>No se pudo cargar el producto.</p>'
-        return
-      }
-
-      const title = buildTitle(data)
-      const images = collectImages(data)
-
-      const whatsappMsg = encodeURIComponent(
-        `Hola, vengo a consultar por el producto: ${title}`
-      )
-
-      container.innerHTML = `
-        <div class="detail-grid">
-
-          <!-- Galería -->
-          <div class="detail-images">
-            ${images.map(src => `
-              <img
-                src="${safe(src)}"
-                alt="${safe(title)}"
-                onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'"
-              >
-            `).join('')}
-          </div>
-
-          <!-- Info -->
-          <div class="detail-info">
-            <h1>${safe(title)}</h1>
-
-            <ul class="detail-list">
-              ${data.deporte ? `<li><strong>Deporte:</strong> ${safe(data.deporte)}</li>` : ''}
-              ${data.nacionalidad ? `<li><strong>Nacionalidad:</strong> ${safe(data.nacionalidad)}</li>` : ''}
-              ${data.tipo_equipo ? `<li><strong>Tipo de equipo:</strong> ${safe(data.tipo_equipo)}</li>` : ''}
-              ${data.etiquetas ? `<li><strong>Etiquetas:</strong> ${safe(data.etiquetas)}</li>` : ''}
-            </ul>
-
-            ${data.descripcion ? `<p>${safe(data.descripcion)}</p>` : ''}
-
-            <a
-              class="btn-primary"
-              href="https://wa.me/5492645454982?text=${whatsappMsg}"
-              target="_blank"
-            >
-              <i class="fab fa-whatsapp"></i>
-              Consultar por WhatsApp
-            </a>
-          </div>
-
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Deportes<span>Store</span></a>
+            <div class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="index.html#productos">Productos</a>
+                <a href="index.html#categorias">Categorías</a>
+                <a href="index.html#contacto">Contacto</a>
+                <a href="login.html" class="btn-login">Iniciar Sesión</a>
+                <a href="#" id="adminLink" class="btn-admin" style="display:none;">
+                    <i class="fas fa-cog"></i> Admin
+                </a>
+                <a href="#" id="logoutBtn" class="btn-logout" style="display:none;">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
         </div>
-      `
-    }
+    </nav>
 
-    loadProduct()
-  </script>
+    <main class="product-page">
+        <div class="product-container">
+            <div class="breadcrumb">
+                <a href="index.html">Inicio</a> / 
+                <a href="index.html#productos">Productos</a> / 
+                <span id="productTitle">Producto</span>
+            </div>
+            
+            <div class="product-detail">
+                <div class="product-images">
+                    <div class="main-image">
+                        <img id="mainProductImage" src="" alt="Producto">
+                    </div>
+                    <div class="thumbnail-images" id="thumbnails">
+                        <!-- Las miniaturas se cargarán aquí -->
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <div class="product-header">
+                        <span class="product-badge" id="productOficial">Oficial</span>
+                        <h1 id="productName">Nombre del Producto</h1>
+                        <div class="product-meta">
+                            <span><i class="fas fa-tag"></i> <span id="productCategory">Categoría</span></span>
+                            <span><i class="fas fa-flag"></i> <span id="productNationality">Nacionalidad</span></span>
+                            <span><i class="fas fa-calendar"></i> <span id="productYear">Año</span></span>
+                        </div>
+                    </div>
+                    
+                    <div class="product-description">
+                        <h3>Descripción</h3>
+                        <p id="productDescription">Descripción del producto...</p>
+                    </div>
+                    
+                    <div class="product-specs">
+                        <h3>Especificaciones</h3>
+                        <div class="specs-grid">
+                            <div class="spec">
+                                <strong>Equipo:</strong>
+                                <span id="productTeam">-</span>
+                            </div>
+                            <div class="spec">
+                                <strong>Tipo de Ropa:</strong>
+                                <span id="productClothingType">-</span>
+                            </div>
+                            <div class="spec">
+                                <strong>Tipo de Equipo:</strong>
+                                <span id="productTeamType">-</span>
+                            </div>
+                            <div class="spec">
+                                <strong>Deporte:</strong>
+                                <span id="productSport">-</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="product-tags">
+                        <h3>Etiquetas</h3>
+                        <div class="tags-container" id="productTags">
+                            <!-- Las etiquetas se cargarán aquí -->
+                        </div>
+                    </div>
+                    
+                    <div class="product-actions">
+                        <a href="#" id="whatsappBtn" class="btn-whatsapp" target="_blank">
+                            <i class="fab fa-whatsapp"></i> Solicitar por WhatsApp
+                        </a>
+                        <button class="btn-secondary" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i> Volver
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>DeportesStore</h3>
+                <p>Tu tienda de confianza para ropa deportiva oficial.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contacto WhatsApp</h3>
+                <p>Realiza tus pedidos por WhatsApp</p>
+                <a href="#" id="footerWhatsapp" class="btn-whatsapp-small">
+                    <i class="fab fa-whatsapp"></i> Contactar
+                </a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 DeportesStore. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/auth.js"></script>
+    <script src="js/product-detail.js"></script>
 </body>
 </html>
