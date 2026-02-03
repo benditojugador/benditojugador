@@ -1,71 +1,44 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
-const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
+/**
+ * ✅ Supabase
+ * Nota: hoy usás tabla 'usuarios' con password en texto plano (según tu esquema actual).
+ * Más adelante lo mejor es migrar a Supabase Auth, pero ahora dejamos esto estable y simple.
+ */
+export const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
+export const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-console.log('✅ Supabase client created')
+/** WhatsApp (formato correcto para mostrar) */
+export const WA_DISPLAY = '+54 9 2645 454982'
+/** WhatsApp (formato para wa.me, sin espacios) */
+export const WA_NUMBER = '5492645454982'
+export const WA_BASE = `https://wa.me/${WA_NUMBER}`
 
-// ⬅️ EXPORTAR DESPUÉS DE CREARLO
-export { supabase }
-
-// ================= LOGIN =================
-async function handleLogin(email, password, role) {
-    try {
-        console.log('🔑 Intentando login con Supabase JS...', { email, role })
-        
-        const { data, error } = await supabase
-            .from('usuarios')
-            .select('*')
-            .eq('email', email)
-            .eq('password', password)
-            .eq('rol', role)
-            .single()
-
-        if (error) {
-            if (error.code === 'PGRST116') {
-                throw new Error('Credenciales incorrectas')
-            }
-            throw new Error(error.message)
-        }
-
-        localStorage.setItem('currentUser', JSON.stringify({
-            id: data.id,
-            email: data.email,
-            rol: data.rol,
-            nombre: data.nombre,
-            loggedIn: true
-        }))
-
-        if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
-            window.location.href = 'admin/dashboard.html'
-        } else {
-            window.location.href = 'index.html'
-        }
-
-        return { success: true }
-
-    } catch (error) {
-        return { success: false, message: error.message }
-    }
+/** Util: normaliza texto para búsquedas */
+export function norm(str = '') {
+  return String(str).toLowerCase().trim()
 }
 
-// ================= HELPERS =================
-function handleLogout() {
-    localStorage.removeItem('currentUser')
-    window.location.href = 'index.html'
+/** Util: arma un título humano para el producto */
+export function productTitle(p) {
+  return (
+    p?.oficial_alternativa ||
+    p?.equipo ||
+    p?.tipo_ropa ||
+    'Producto'
+  )
 }
 
-function getCurrentUser() {
-    const userStr = localStorage.getItem('currentUser')
-    return userStr ? JSON.parse(userStr) : null
+/** Util: arma el link de WhatsApp con mensaje automático */
+export function buildWaLink(product) {
+  const title = productTitle(product)
+  const msg = `Hola, vengo a consultar por ${title}.`
+  return `${WA_BASE}?text=${encodeURIComponent(msg)}`
 }
 
-// ================= INIT =================
-document.addEventListener('DOMContentLoaded', async () => {
-    const user = getCurrentUser()
-    if (window.location.pathname.includes('admin') && (!user || !user.loggedIn)) {
-        window.location.href = 'login.html'
-    }
-})
+/** Util: imagen principal con fallback */
+export function getMainImage(product) {
+  return product?.portada || product?.img1 || product?.img2 || product?.img3 || product?.img4 || product?.img5 || ''
+}
