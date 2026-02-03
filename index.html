@@ -1,361 +1,482 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bendito Jugador - Catálogo Deportivo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bendito Jugador - Ropa Deportiva Oficial</title>
+    <link rel="icon" href="images/icon.png" type="image/png">
+    <link rel="apple-touch-icon" href="images/icon.png">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Swiper CSS para carrusel -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+    <style>
+        /* Estilos específicos para esta página */
+        :root {
+            --rojo: #9c1d26;
+            --dorado: #fed05d;
+            --hueso: #eceadb;
+            --gris: #2c3e50;
+            --gris-claro: #95a5a6;
+            --verde-whatsapp: #25D366;
+        }
 
-  <link rel="icon" href="images/icon.png" type="image/png" />
-  <link rel="apple-touch-icon" href="images/icon.png" />
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--hueso);
+            color: var(--gris);
+        }
 
-  <!-- Estilos existentes del proyecto -->
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        /* NAVBAR MODERNO */
+        .navbar-modern {
+            background: white;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 0.8rem 0;
+        }
 
-  <!-- Ajustes mínimos para que el index sea CATÁLOGO (sin reventar tu estética) -->
-  <style>
-    :root{
-      --rojo:#9c1d26;
-      --dorado:#fed05d;
-      --hueso:#eceadb;
-      --gris:#2c3e50;
-      --gris-claro:#95a5a6;
-    }
+        .nav-container-modern {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
 
-    /* ✅ Sidebar host obligatorio (no se usa en catálogo, pero está para no romper navegación) */
-    #sidebar-host{ display:none; }
+        .logo-modern {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
 
-    /* ===== Layout de catálogo ===== */
-    .catalog-wrap{
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 1.25rem;
-    }
+        .logo-image {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 8px 18px rgba(0,0,0,.08);
+        }
 
-    .catalog-head{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap: 1rem;
-      margin: 1rem 0 1.25rem;
-      flex-wrap: wrap;
-    }
+        .logo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
 
-    .catalog-title h1{
-      margin:0;
-      color: var(--gris);
-      letter-spacing: .4px;
-      font-size: clamp(1.3rem, 2.6vw, 2.1rem);
-      line-height: 1.1;
-    }
-    .catalog-title p{
-      margin:.35rem 0 0;
-      color: #5a6c7d;
-      font-size: .98rem;
-    }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1;
+        }
 
-    .filters{
-      display:grid;
-      grid-template-columns: 1.3fr 1fr 1fr 1fr;
-      gap:.75rem;
-      width:100%;
-      background: #fff;
-      border-radius: 14px;
-      padding: .85rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,.06);
-      border: 1px solid rgba(0,0,0,.06);
-    }
-    .filters .field{
-      display:flex;
-      flex-direction:column;
-      gap:.35rem;
-    }
-    .filters label{
-      font-size:.78rem;
-      color:#6c7a89;
-      font-weight:600;
-    }
-    .filters input, .filters select{
-      height: 42px;
-      border-radius: 12px;
-      border: 1px solid rgba(0,0,0,.12);
-      padding: 0 .9rem;
-      outline: none;
-      font-size: .95rem;
-      background: #fff;
-    }
-    .filters input:focus, .filters select:focus{
-      border-color: rgba(156,29,38,.55);
-      box-shadow: 0 0 0 4px rgba(156,29,38,.10);
-    }
-    .filters .actions{
-      display:flex;
-      gap:.6rem;
-      align-items:flex-end;
-      justify-content:flex-end;
-    }
-    .btn{
-      height: 42px;
-      border:0;
-      border-radius: 12px;
-      padding: 0 1rem;
-      font-weight: 700;
-      cursor:pointer;
-      display:inline-flex;
-      align-items:center;
-      gap:.55rem;
-      white-space: nowrap;
-    }
-    .btn-primary{
-      background: var(--rojo);
-      color:#fff;
-    }
-    .btn-ghost{
-      background: #f5f6f7;
-      color: var(--gris);
-      border: 1px solid rgba(0,0,0,.08);
-    }
+        .logo-main {
+            font-weight: 900;
+            letter-spacing: 1px;
+            color: var(--rojo);
+            font-size: 1.1rem;
+        }
 
-    .statsbar{
-      display:flex;
-      gap:.75rem;
-      flex-wrap:wrap;
-      align-items:center;
-      margin: .9rem 0 1.1rem;
-      color:#5a6c7d;
-      font-size:.95rem;
-    }
-    .pill{
-      background:#fff;
-      border: 1px solid rgba(0,0,0,.08);
-      border-radius: 999px;
-      padding: .35rem .7rem;
-      box-shadow: 0 6px 18px rgba(0,0,0,.04);
-    }
+        .logo-sub {
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--gris);
+            font-size: 0.9rem;
+        }
 
-    .products-grid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 1rem;
-      margin: 1rem 0 2rem;
-    }
+        .nav-main {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-    .p-card{
-      background:#fff;
-      border-radius: 16px;
-      overflow:hidden;
-      border: 1px solid rgba(0,0,0,.06);
-      box-shadow: 0 10px 30px rgba(0,0,0,.06);
-      transition: transform .18s ease, box-shadow .18s ease;
-      display:flex;
-      flex-direction:column;
-      min-height: 100%;
-    }
-    .p-card:hover{
-      transform: translateY(-3px);
-      box-shadow: 0 18px 45px rgba(0,0,0,.10);
-    }
-    .p-img{
-      height: 240px;
-      background: #f1f2f3;
-      overflow:hidden;
-    }
-    .p-img img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-    }
-    .p-body{
-      padding: 1rem;
-      display:flex;
-      flex-direction:column;
-      gap:.65rem;
-      flex: 1;
-    }
-    .p-title{
-      margin:0;
-      font-size: 1.02rem;
-      color: var(--gris);
-      line-height: 1.25;
-      font-weight: 800;
-    }
-    .p-meta{
-      display:flex;
-      flex-wrap:wrap;
-      gap:.45rem;
-    }
-    .tag{
-      font-size:.78rem;
-      padding:.25rem .55rem;
-      border-radius:999px;
-      border: 1px solid rgba(0,0,0,.10);
-      color:#5a6c7d;
-      background: #fafafa;
-    }
-    .tag strong{ color: var(--gris); }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: 12px;
+            text-decoration: none;
+            color: var(--gris);
+            font-weight: 700;
+            border: 1px solid rgba(0,0,0,.06);
+            background: #fff;
+        }
 
-    .p-cta{
-      margin-top:auto;
-      display:flex;
-      gap:.6rem;
-    }
-    .p-cta a{
-      text-decoration:none;
-      flex:1;
-      text-align:center;
-      height: 42px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      gap:.5rem;
-      border-radius: 12px;
-      font-weight: 800;
-      cursor:pointer;
-    }
-    .a-detail{
-      background: #111827;
-      color:#fff;
-    }
-    .a-wa{
-      background: #25D366;
-      color:#fff;
-    }
+        .nav-link.active {
+            border-color: rgba(156,29,38,.25);
+            box-shadow: 0 8px 20px rgba(156,29,38,.08);
+        }
 
-    .empty{
-      background:#fff;
-      border: 1px dashed rgba(0,0,0,.18);
-      border-radius: 16px;
-      padding: 2rem 1.25rem;
-      text-align:center;
-      color:#5a6c7d;
-      box-shadow: 0 10px 30px rgba(0,0,0,.06);
-      margin: 1.25rem 0 2rem;
-    }
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
 
-    .footer-fix{
-      padding: 1.2rem 1rem;
-      text-align:center;
-      color:#6c7a89;
-      border-top: 1px solid rgba(0,0,0,.06);
-      background: #fff;
-    }
+        .nav-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.55rem 0.85rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 800;
+            border: 1px solid rgba(0,0,0,.08);
+            background: #f7f7f7;
+            color: var(--gris);
+        }
 
-    @media (max-width: 1100px){
-      .products-grid{ grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    }
-    @media (max-width: 860px){
-      .filters{ grid-template-columns: 1fr 1fr; }
-      .filters .actions{ justify-content: stretch; }
-      .filters .actions .btn{ flex:1; }
-      .products-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .p-img{ height: 220px; }
-    }
-    @media (max-width: 520px){
-      .filters{ grid-template-columns: 1fr; }
-      .products-grid{ grid-template-columns: 1fr; }
-    }
-  </style>
+        .nav-action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .nav-action-btn.admin {
+            background: #111827;
+            border-color: #111827;
+            color: white;
+        }
+
+        .nav-action-btn.logout {
+            background: #fee2e2;
+            border-color: rgba(0,0,0,.08);
+            color: #7f1d1d;
+        }
+
+        .mobile-toggle {
+            display: none;
+            border: 0;
+            background: transparent;
+            font-size: 1.25rem;
+            cursor: pointer;
+        }
+
+        /* HERO */
+        .hero {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2.2rem 2rem 1.4rem;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+            letter-spacing: 0.2px;
+        }
+
+        .hero p {
+            margin: 0.45rem 0 0;
+            color: #6c7a89;
+            font-size: 1.05rem;
+        }
+
+        /* CARRUSEL */
+        .carousel-section {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+        }
+
+        .carousel-section h2 {
+            text-align: center;
+            margin: 1rem 0 0.2rem;
+            font-size: clamp(1.3rem, 2vw, 1.7rem);
+        }
+
+        .section-subtitle{
+            margin-top: .4rem;
+            color:#6c7a89;
+            font-size: 1rem;
+            text-align:center;
+            max-width: 900px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+
+        .swiper {
+            margin-top: 1.2rem;
+            padding-bottom: 2.5rem;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,.06);
+            box-shadow: 0 14px 35px rgba(0,0,0,.08);
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .product-image {
+            height: 240px;
+            background: #f1f2f3;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-info {
+            padding: 1rem 1rem 1.15rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+
+        .product-badge {
+            display: inline-flex;
+            width: fit-content;
+            padding: 0.28rem 0.6rem;
+            border-radius: 999px;
+            background: rgba(254,208,93,.35);
+            border: 1px solid rgba(0,0,0,.08);
+            font-weight: 800;
+            font-size: 0.8rem;
+        }
+
+        .product-title {
+            margin: 0;
+            font-size: 1.05rem;
+            font-weight: 900;
+            color: #111827;
+        }
+
+        .product-details {
+            margin: 0;
+            color: #5a6c7d;
+            font-size: 0.95rem;
+            line-height: 1.35;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 0.6rem;
+            margin-top: 0.4rem;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            height: 42px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 900;
+            border: 1px solid rgba(0,0,0,.08);
+        }
+
+        .btn-primary {
+            background: var(--verde-whatsapp);
+            color: white;
+            border-color: rgba(0,0,0,.08);
+        }
+
+        .btn-secondary {
+            background: #111827;
+            color: white;
+            border-color: #111827;
+        }
+
+        /* FOOTER COMPACTO (pedido) */
+        .footer-compact{
+            background: #ffffff;
+            border-top: 1px solid rgba(0,0,0,.08);
+            padding: 12px 0;
+        }
+        .footer-compact-inner{
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .footer-left{
+            display:flex;
+            align-items:center;
+            gap:.75rem;
+        }
+        .footer-icon{
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+        }
+        .footer-muted{ color:#6c7a89; font-size:.92rem; }
+        .footer-wa{
+            display:inline-flex;
+            align-items:center;
+            gap:.5rem;
+            text-decoration:none;
+            font-weight: 800;
+            color:#111827;
+            padding: 8px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,.10);
+            background:#f7f7f7;
+        }
+        .footer-wa:hover{ transform: translateY(-1px); }
+
+        @media (max-width: 900px) {
+            .nav-container-modern { padding: 0 1rem; }
+            .hero { padding: 1.7rem 1rem 1.2rem; }
+            .carousel-section { padding: 0 1rem 2rem; }
+        }
+
+        @media (max-width: 640px) {
+            .nav-main { display: none; }
+            .mobile-toggle { display: inline-flex; }
+        }
+    </style>
 </head>
 
 <body>
-  <!-- ✅ Sidebar host obligatorio (no se usa en catálogo público) -->
-  <div id="sidebar-host"></div>
 
-  <!-- Navbar (se respeta el estilo del proyecto) -->
-  <header class="navbar-modern">
-    <div class="nav-container-modern">
-      <a href="index.html" class="logo-modern">
-        <div class="logo-image">
-          <img src="images/icon.png" alt="Bendito Jugador" />
+    <!-- Nav Moderno -->
+    <nav class="navbar-modern">
+        <div class="nav-container-modern">
+            <!-- Logo + Nombre alineados -->
+            <a href="index.html" class="logo-modern">
+                <div class="logo-image">
+                    <img src="images/icon.png" alt="Bendito Jugador" onerror="this.style.display='none'">
+                </div>
+                <div class="logo-text">
+                    <span class="logo-main">BENDITO</span>
+                    <span class="logo-sub">JUGADOR</span>
+                </div>
+            </a>
+
+            <!-- Navegación principal -->
+            <div class="nav-main">
+                <a href="index.html" class="nav-link active">
+                    <i class="fas fa-tshirt"></i>
+                    <span>Catálogo</span>
+                </a>
+            </div>
+
+            <!-- Acciones de usuario (derecha) -->
+            <div class="nav-actions">
+                <a href="login.html" class="nav-action-btn" id="loginBtn">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Ingresar</span>
+                </a>
+                <a href="register.html" class="nav-action-btn" id="registerBtn">
+                    <i class="fas fa-user-plus"></i>
+                    <span>Registrarse</span>
+                </a>
+                <a href="admin/dashboard.html" class="nav-action-btn admin" id="adminLink" style="display: none;">
+                    <i class="fas fa-cog"></i>
+                    <span>Panel</span>
+                </a>
+                <a href="#" class="nav-action-btn logout" id="logoutBtn" style="display: none;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Salir</span>
+                </a>
+            </div>
+
+            <!-- Menú móvil (placeholder) -->
+            <button class="mobile-toggle" id="mobileToggle" aria-label="Menú">
+                <i class="fas fa-bars"></i>
+            </button>
         </div>
-        <div class="logo-text">
-          <span class="logo-main">BENDITO</span>
-          <span class="logo-sub">JUGADOR</span>
-        </div>
-      </a>
+    </nav>
 
-      <div class="nav-main">
-        <nav class="nav-links-modern">
-          <a class="nav-link-modern active" href="index.html">
-            <i class="fa-solid fa-shirt"></i> Catálogo
-          </a>
-          <a class="nav-link-modern" href="register.html">
-            <i class="fa-solid fa-user-plus"></i> Mayoristas
-          </a>
-          <a class="nav-link-modern" href="login.html">
-            <i class="fa-solid fa-right-to-bracket"></i> Ingresar
-          </a>
-        </nav>
-      </div>
-    </div>
-  </header>
-
-  <main class="catalog-wrap">
-    <section class="catalog-head">
-      <div class="catalog-title">
+    <!-- Hero / Frases (se mantiene idea general) -->
+    <section class="hero">
         <h1>Catálogo Deportivo</h1>
         <p>Explorá productos y consultá por WhatsApp. Sin precios, sin carrito: directo al cierre.</p>
-      </div>
     </section>
 
-    <!-- Filtros -->
-    <section class="filters" aria-label="Filtros del catálogo">
-      <div class="field">
-        <label for="q">Buscar</label>
-        <input id="q" type="search" placeholder="Equipo, año, tipo, etiqueta..." autocomplete="off" />
-      </div>
+    <!-- Carrusel de Productos -->
+    <section id="productos" class="carousel-section">
+        <h2>Productos Destacados</h2>
+        <p class="section-subtitle">Mostramos algunos productos según interés (métricas). Para ver todo, usá el Catálogo.</p>
 
-      <div class="field">
-        <label for="f-equipo">Equipo</label>
-        <select id="f-equipo">
-          <option value="">Todos</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="f-tipo">Tipo</label>
-        <select id="f-tipo">
-          <option value="">Todos</option>
-        </select>
-      </div>
-
-      <div class="field">
-        <label for="f-anio">Año</label>
-        <select id="f-anio">
-          <option value="">Todos</option>
-        </select>
-      </div>
-
-      <div class="actions">
-        <button class="btn btn-primary" id="btn-aplicar" type="button">
-          <i class="fa-solid fa-filter"></i> Filtrar
-        </button>
-        <button class="btn btn-ghost" id="btn-limpiar" type="button">
-          <i class="fa-solid fa-rotate-left"></i> Limpiar
-        </button>
-      </div>
+        <div class="swiper">
+            <div class="swiper-wrapper" id="productsCarousel"></div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
     </section>
 
-    <div class="statsbar" aria-live="polite">
-      <span class="pill"><strong id="stat-total">0</strong> productos</span>
-      <span class="pill">WhatsApp: <strong id="stat-wa">+54 9 2645 454982</strong></span>
-    </div>
+    <footer class="footer-compact">
+        <div class="footer-compact-inner">
+            <div class="footer-left">
+                <img src="images/icon.png" alt="Bendito Jugador" class="footer-icon" onerror="this.style.display='none'">
+                <div>
+                    <strong>Bendito Jugador</strong>
+                    <div class="footer-muted">San Juan, Argentina</div>
+                </div>
+            </div>
+            <a class="footer-wa" href="https://wa.me/5492645454982" target="_blank" rel="noopener">
+                <i class="fab fa-whatsapp"></i> +54 9 2645 454982
+            </a>
+        </div>
+    </footer>
 
-    <!-- Grilla -->
-    <section id="grid" class="products-grid" aria-label="Listado de productos"></section>
+    <!-- Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-    <div id="empty" class="empty" style="display:none;">
-      <h3 style="margin:0 0 .35rem;color:#111827;">Sin resultados</h3>
-      <p style="margin:0;">Probá con otros filtros o limpiá la búsqueda.</p>
-    </div>
-  </main>
+    <!-- ✅ MÓDULOS (esto estaba mal antes) -->
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/index.js"></script>
 
-  <footer class="footer-fix">
-    <strong>Bendito Jugador</strong> · Catálogo deportivo profesional · Consultas por WhatsApp
-  </footer>
+    <!-- Mantengo tu lógica de sesión local (si la venías usando) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const loginBtn = document.getElementById("loginBtn");
+            const adminLink = document.getElementById("adminLink");
+            const logoutBtn = document.getElementById("logoutBtn");
+            const registerBtn = document.getElementById("registerBtn");
 
-  <!-- ✅ Carga del catálogo (módulos) -->
-  <script type="module" src="js/products.js"></script>
+            function updateLoginState() {
+                const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+
+                if (!user) {
+                    if (loginBtn) loginBtn.style.display = "inline-flex";
+                    if (registerBtn) registerBtn.style.display = "inline-flex";
+                    if (adminLink) adminLink.style.display = "none";
+                    if (logoutBtn) logoutBtn.style.display = "none";
+                    return;
+                }
+
+                if (loginBtn) loginBtn.style.display = "none";
+                if (registerBtn) registerBtn.style.display = "none";
+                if (logoutBtn) logoutBtn.style.display = "inline-flex";
+
+                if (adminLink) {
+                    const isStaff = user?.rol === "admin" || user?.rol === "operador";
+                    adminLink.style.display = isStaff ? "inline-flex" : "none";
+                }
+            }
+
+            updateLoginState();
+
+            if (logoutBtn) {
+                logoutBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    localStorage.removeItem("currentUser");
+                    window.location.reload();
+                });
+            }
+        });
+    </script>
+
 </body>
 </html>
