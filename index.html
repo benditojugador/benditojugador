@@ -745,8 +745,7 @@
                     <i class="fas fa-user-circle"></i> Ingresar
                 </a>
                 <a href="admin/dashboard.html" class="mobile-action-btn admin" id="mobileAdminLink" style="display: none;">
-                    <i class="fas fa-cog"></i> Panel Admin
-                </a>
+                    <i class="fas fa-cog"></i> <span>Panel Admin</span></a>
             </div>
         </div>
     </nav>
@@ -1022,35 +1021,46 @@
                 const logoutBtn = document.getElementById('logoutBtn');
                 const mobileLoginBtn = document.getElementById('mobileLoginBtn');
                 const mobileAdminLink = document.getElementById('mobileAdminLink');
-                
+
+                const setLabel = (el, value) => {
+                    if (!el) return;
+                    const span = el.querySelector('span');
+                    if (span) span.textContent = value;
+                };
+
                 if (user && user.loggedIn) {
-                    // Ocultar login
                     if (loginBtn) loginBtn.style.display = 'none';
                     if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
-                    
-                    // Mostrar panel solo para ADMIN / OPERADOR
+
+                    // Panel solo ADMIN / OPERADOR
                     if (adminLink) {
                         if (user.rol !== 'MAYORISTA') {
                             adminLink.style.display = 'flex';
-                            adminLink.querySelector('span').textContent = user.rol;
+                            setLabel(adminLink, user.rol);
                         } else {
                             adminLink.style.display = 'none';
                         }
                     }
+
                     if (mobileAdminLink) {
                         if (user.rol !== 'MAYORISTA') {
                             mobileAdminLink.style.display = 'flex';
-                            mobileAdminLink.querySelector('span').textContent = user.rol;
+                            setLabel(mobileAdminLink, user.rol);
                         } else {
                             mobileAdminLink.style.display = 'none';
                         }
                     }
-                    
-                    // Mostrar logout
+
                     if (logoutBtn) logoutBtn.style.display = 'flex';
+                } else {
+                    if (loginBtn) loginBtn.style.display = 'flex';
+                    if (mobileLoginBtn) mobileLoginBtn.style.display = 'flex';
+                    if (adminLink) adminLink.style.display = 'none';
+                    if (mobileAdminLink) mobileAdminLink.style.display = 'none';
+                    if (logoutBtn) logoutBtn.style.display = 'none';
                 }
             }
-            
+
             updateLoginState();
             
             // Logout

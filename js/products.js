@@ -1,5 +1,12 @@
 import { supabase } from './auth.js'
-import { logMovimiento } from './logger.js'
+
+/**
+ * Catálogo (Home)
+ * - Solo carga y renderiza productos visibles.
+ * - NO registra métricas (eso se activa más adelante).
+ * - Nunca debe romper el render si Supabase falla.
+ * - Evita pedir imágenes “hotlink” que suelen dar 404 (Adidas/Nike).
+ */
 
 const wrapper = document.getElementById('productsCarousel')
 
@@ -12,22 +19,52 @@ function esc(str) {
     .replaceAll("'", '&#39;')
 }
 
+function isBlockedHotlink(url) {
+  if (!url) return false
+  try {
+    const u = new URL(url)
+    const host = u.hostname.toLowerCase()
+    return (
+      host.includes('assets.adidas.com') ||
+      host.includes('static.nike.com')
+    )
+  } catch {
+    // si no es URL válida, la dejamos pasar (puede ser relativa)
+    return false
+  }
+}
+
+function pickImage(p) {
+  const candidates = [p?.portada, p?.img1, p?.img2, p?.img3, p?.img4, p?.img5].filter(Boolean)
+
+  for (const c of candidates) {
+    if (!isBlockedHotlink(c)) return c
+  }
+  return 'https://via.placeholder.com/800x520?text=Sin+Imagen'
+}
+
 function cardSlide(p) {
-  const title = `${p.equipo} - ${p.tipo_ropa}`
-  const img = p.portada || p.img1 || 'https://via.placeholder.com/600x400?text=Sin+Imagen'
-  const desc = p.descripcion || ''
-  const badge = p.deporte || ''
+  const title = `${p.equipo ?? ''} - ${p.tipo_ropa ?? ''}`.trim() || 'Producto'
+  const img = pickImage(p)
+  const desc = p.descripcion ?? ''
+  const badge = p.deporte ?? ''
+
   return `
     <div class="swiper-slide">
-      <div class="product-card" data-id="${p.id}">
+      <div class="product-card" data-id="${esc(p.id)}">
         <div class="product-image">
-          <img src="${esc(img)}" alt="${esc(title)}">
+          <img
+            src="${esc(img)}"
+            alt="${esc(title)}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://via.placeholder.com/800x520?text=Sin+Imagen';"
+          >
           ${badge ? `<span class="product-badge">${esc(badge)}</span>` : ''}
         </div>
         <div class="product-content">
           <h3>${esc(title)}</h3>
           <p>${esc(desc)}</p>
-          <a class="btn-product" href="producto.html?id=${p.id}">
+          <a class="btn-product" href="producto.html?id=${esc(p.id)}">
             Ver detalle <i class="fas fa-arrow-right"></i>
           </a>
         </div>
@@ -37,7 +74,9 @@ function cardSlide(p) {
 }
 
 function initSwiper() {
+  if (typeof window === 'undefined') return
   if (typeof Swiper === 'undefined') return
+
   // eslint-disable-next-line no-undef
   new Swiper('.swiper', {
     slidesPerView: 1,
@@ -58,69 +97,52 @@ function initSwiper() {
   })
 }
 
-async function loadCatalogo() {
+function renderMessage(title, message) {
   if (!wrapper) return
-
   wrapper.innerHTML = `
     <div class="swiper-slide">
       <div class="product-card">
         <div class="product-content">
-          <h3>Cargando productos…</h3>
-          <p>Un segundo, que estamos trayendo lo bueno.</p>
+          <h3>${esc(title)}</h3>
+          <p>${esc(message)}</p>
         </div>
       </div>
     </div>
   `
+}
+
+async function loadCatalogo() {
+  if (!wrapper) return
+
+  renderMessage('Cargando productos…', 'Un segundo, que estamos trayendo lo bueno.')
 
   const { data, error } = await supabase
     .from('productos_deportivos')
-    .select('id, equipo, tipo_ropa, deporte, descripcion, portada, img1, visible, created_at')
+    .select('id, equipo, tipo_ropa, deporte, descripcion, portada, img1, img2, img3, img4, img5, visible, created_at')
     .eq('visible', true)
     .order('created_at', { ascending: false })
     .limit(24)
 
   if (error) {
-    console.error(error)
-    wrapper.innerHTML = `
-      <div class="swiper-slide">
-        <div class="product-card">
-          <div class="product-content">
-            <h3>No pudimos cargar el catálogo</h3>
-            <p>Revisá tu Supabase (RLS / columna visible) y recargá.</p>
-          </div>
-        </div>
-      </div>
-    `
+    renderMessage(
+      'No pudimos cargar el catálogo',
+      'Revisá Supabase (RLS / columna visible) y recargá.'
+    )
     return
   }
 
-  const items = data || []
-  wrapper.innerHTML = items.length
-    ? items.map(cardSlide).join('')
-    : `
-      <div class="swiper-slide">
-        <div class="product-card">
-          <div class="product-content">
-            <h3>Sin productos por ahora</h3>
-            <p>Cuando cargues productos visibles desde el dashboard, aparecen acá.</p>
-          </div>
-        </div>
-      </div>
-    `
+  const items = Array.isArray(data) ? data : []
 
-  // Métrica: catálogo visto
-  logMovimiento({ accion: 'catalogo_visto', detalle: { page: 'index.html' } })
+  if (items.length === 0) {
+    renderMessage(
+      'Sin productos por ahora',
+      'Cuando cargues productos visibles desde el dashboard, aparecen acá.'
+    )
+    initSwiper()
+    return
+  }
 
-  // Métrica: click a detalle
-  wrapper.addEventListener('click', (e) => {
-    const a = e.target.closest('a[href^="producto.html?id="]')
-    if (!a) return
-    const card = e.target.closest('.product-card')
-    const id = card?.getAttribute('data-id')
-    if (id) logMovimiento({ accion: 'click_detalle', producto_id: id, detalle: { from: 'carousel' } })
-  }, { capture: true })
-
-  // Iniciar Swiper con el HTML real
+  wrapper.innerHTML = items.map(cardSlide).join('')
   initSwiper()
 }
 
