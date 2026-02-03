@@ -1,42 +1,71 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm'
 
-/**
- * Supabase (Catálogo Bendito Jugador)
- */
-export const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
-export const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
+const SUPABASE_URL = 'https://lentkpuclkmvktnujmva.supabase.co'
+const SUPABASE_KEY = 'sb_publishable_E8GNXTBWSFCh-jxRPXM-uA_Ah1ouwCB'
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
 
-/**
- * WhatsApp
- * Mostrar: +54 9 2645 454982
- * wa.me: 5492645454982
- */
-export const WA_DISPLAY = '2645042317'
-export const WA_NUMBER = '5492645042317'
-export const WA_BASE = `https://wa.me/${WA_NUMBER}`
+console.log('✅ Supabase client created')
 
-export function norm(v = '') {
-  return String(v ?? '').toLowerCase().trim()
+// ⬅️ EXPORTAR DESPUÉS DE CREARLO
+export { supabase }
+
+// ================= LOGIN =================
+async function handleLogin(email, password, role) {
+    try {
+        console.log('🔑 Intentando login con Supabase JS...', { email, role })
+        
+        const { data, error } = await supabase
+            .from('usuarios')
+            .select('*')
+            .eq('email', email)
+            .eq('password', password)
+            .eq('rol', role)
+            .single()
+
+        if (error) {
+            if (error.code === 'PGRST116') {
+                throw new Error('Credenciales incorrectas')
+            }
+            throw new Error(error.message)
+        }
+
+        localStorage.setItem('currentUser', JSON.stringify({
+            id: data.id,
+            email: data.email,
+            rol: data.rol,
+            nombre: data.nombre,
+            loggedIn: true
+        }))
+
+        if (['ADMINISTRADOR', 'OPERADOR', 'MAYORISTA'].includes(role)) {
+            window.location.href = 'admin/dashboard.html'
+        } else {
+            window.location.href = 'index.html'
+        }
+
+        return { success: true }
+
+    } catch (error) {
+        return { success: false, message: error.message }
+    }
 }
 
-export function productTitle(p) {
-  return (
-    p?.oficial_alternativa ||
-    (p?.equipo && p?.año ? `${p.equipo} ${p.año}` : '') ||
-    p?.equipo ||
-    p?.tipo_ropa ||
-    'Producto'
-  )
+// ================= HELPERS =================
+function handleLogout() {
+    localStorage.removeItem('currentUser')
+    window.location.href = 'index.html'
 }
 
-export function getMainImage(p) {
-  return p?.portada || p?.img1 || p?.img2 || p?.img3 || p?.img4 || p?.img5 || ''
+function getCurrentUser() {
+    const userStr = localStorage.getItem('currentUser')
+    return userStr ? JSON.parse(userStr) : null
 }
 
-export function buildWaLink(product) {
-  const title = productTitle(product)
-  const msg = `Hola, vengo a consultar por ${title}.`
-  return `${WA_BASE}?text=${encodeURIComponent(msg)}`
-}
+// ================= INIT =================
+document.addEventListener('DOMContentLoaded', async () => {
+    const user = getCurrentUser()
+    if (window.location.pathname.includes('admin') && (!user || !user.loggedIn)) {
+        window.location.href = 'login.html'
+    }
+})
