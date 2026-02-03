@@ -13,8 +13,8 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
  * Mostrar: +54 9 2645 454982
  * wa.me: 5492645454982
  */
-export const WA_DISPLAY = '+54 9 2645 454982'
-export const WA_NUMBER = '5492645454982'
+export const WA_DISPLAY = '2645042317'
+export const WA_NUMBER = '5492645042317'
 export const WA_BASE = `https://wa.me/${WA_NUMBER}`
 
 export function norm(v = '') {
