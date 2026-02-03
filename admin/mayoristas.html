@@ -3,97 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <title>Mayoristas | Bendito Jugador</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <style>
-    body{font-family:system-ui,sans-serif;background:#0f172a;color:#e5e7eb;padding:30px}
-    h1{margin:0 0 6px}
-    .muted{color:#94a3b8}
-    .topnav{display:flex;gap:10px;align-items:center;margin-bottom:18px}
-    .navlink{background:#111827;color:#e5e7eb;border:1px solid #334155;padding:10px 14px;border-radius:12px;text-decoration:none;cursor:pointer}
-    .navlink:hover{border-color:#64748b}
-    .navlink.danger{background:#7f1d1d;border-color:#b91c1c}
-    .card{background:#020617;border:1px solid #1f2937;border-radius:16px;padding:16px}
-    .controls{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0}
-    input,select{background:#0b1220;color:#e5e7eb;border:1px solid #334155;border-radius:12px;padding:10px 12px;min-width:220px}
-    .table-wrap{max-height:520px;overflow:auto;border:1px solid #1f2937;border-radius:16px}
-    table{width:100%;border-collapse:collapse;font-size:14px}
-    thead th{position:sticky;top:0;background:#0b1220;border-bottom:1px solid #1f2937;padding:10px;text-align:left}
-    tbody td{border-bottom:1px solid #111827;padding:10px;vertical-align:top}
-    .pill{display:inline-block;padding:4px 10px;border-radius:999px;border:1px solid #334155;font-size:12px}
-    .pill.ok{background:#064e3b;border-color:#10b981}
-    .pill.bad{background:#3f1d1d;border-color:#ef4444}
-    .actions{display:flex;gap:8px;flex-wrap:wrap}
-    button{background:#111827;color:#e5e7eb;border:1px solid #334155;border-radius:12px;padding:8px 10px;cursor:pointer}
-    button:hover{border-color:#64748b}
-    button.ghost{background:transparent}
-    .msg{margin-top:10px;color:#93c5fd}
-    .error{color:#fca5a5}
-    .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;padding:18px}
-    .modal{max-width:720px;width:100%;background:#020617;border:1px solid #334155;border-radius:16px;padding:16px}
-    .modal h2{margin:0 0 10px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    @media (max-width:720px){.grid{grid-template-columns:1fr}}
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body>
+<body class="admin-page">
 
-  <div class="topnav">
-    <a href="dashboard.html" class="navlink">📦 Productos</a>
-    <a href="mayoristas.html" class="navlink">👥 Mayoristas</a>
-    <button class="navlink danger" id="btnLogout" type="button">Salir</button>
+  <header class="admin-header">
+    <h1>Mayoristas</h1>
+    <button id="btnLogout" class="btn-danger" type="button">Salir</button>
+  </header>
+
+  <div class="admin-layout">
+    <aside class="admin-sidebar">
+      <ul id="sidebarMenu"></ul>
+    </aside>
+
+    <main class="admin-content">
+      <section class="admin-section">
+        <h2>Lista</h2>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+          <input id="q" type="text" placeholder="Buscar por nombre o email" style="max-width:320px" />
+          <select id="estado" style="max-width:220px">
+            <option value="all">Todos</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="aprobado">Aprobado</option>
+            <option value="rechazado">Rechazado</option>
+          </select>
+          <button id="btnRefrescar" class="btn-ghost" type="button">Refrescar</button>
+        </div>
+
+        <p id="msg" style="margin-top:10px;color:#93c5fd"></p>
+
+        <div style="max-height:520px;overflow:auto;border:1px solid #1f2937;border-radius:16px;margin-top:10px">
+          <table class="admin-table" style="margin:0">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>WhatsApp</th>
+                <th>Ciudad</th>
+                <th>Estado</th>
+                <th>Alta</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
   </div>
 
-  <h1>Mayoristas</h1>
-  <div class="muted">Lista completa de mayoristas registrados. Buscá por nombre o correo, copiá contacto y abrí WhatsApp al toque.</div>
-
-  <div class="card">
-    <div class="controls">
-      <input id="q" placeholder="Buscar por nombre o email..." />
-      <select id="estado">
-        <option value="all">Todos</option>
-        <option value="pendiente">Pendiente</option>
-        <option value="aprobado">Aprobado</option>
-        <option value="rechazado">Rechazado</option>
-      </select>
-      <button id="btnRefrescar" type="button">Actualizar</button>
-    </div>
-
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Email</th>
-            <th>WhatsApp</th>
-            <th>Ciudad</th>
-            <th>Estado</th>
-            <th>Alta</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tbody">
-          <tr><td colspan="7" class="muted">Cargando...</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="msg" id="msg"></div>
-  </div>
-
-  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+  <!-- Modal -->
+  <div id="modalBackdrop" class="modal-backdrop" style="display:none">
     <div class="modal">
-      <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
-        <h2 id="modalTitle">Detalle</h2>
-        <button id="btnCerrarModal" class="ghost" type="button">✕</button>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+        <h2 id="modalTitle" style="margin:0">Detalle</h2>
+        <button id="btnCerrarModal" class="btn-ghost" type="button">Cerrar</button>
       </div>
-      <div class="grid" id="modalBody"></div>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
-        <button id="btnCopyEmail" type="button">Copiar email</button>
-        <button id="btnCopyWsp" type="button">Copiar WhatsApp</button>
-        <a id="btnAbrirWsp" class="navlink" href="#" target="_blank" rel="noreferrer">Abrir WhatsApp</a>
+
+      <div id="modalBody" class="grid" style="margin-top:12px"></div>
+
+      <div class="admin-actions" style="margin-top:12px;justify-content:flex-end">
+        <button id="btnCopyEmail" type="button" class="btn-ghost">Copiar email</button>
+        <button id="btnCopyWsp" type="button" class="btn-ghost">Copiar WhatsApp</button>
+        <a id="btnAbrirWsp" class="btn-primary" href="#" target="_blank" rel="noopener">Abrir WhatsApp</a>
       </div>
     </div>
   </div>
+
+  <script type="module">
+    // Sidebar simple (admin)
+    const ul = document.getElementById('sidebarMenu');
+    function add(label, href, active=false){
+      const li=document.createElement('li'); li.textContent=label;
+      if(active) li.classList.add('active');
+      li.addEventListener('click', ()=> window.location.href = href);
+      ul.appendChild(li);
+    }
+    add('📦 Dashboard','dashboard.html');
+    add('👥 Mayoristas','mayoristas.html', true);
+    add('🧑‍💼 Operadores','usuarios.html');
+    add('📊 Métricas','dashboard.html#metricas');
+  </script>
 
   <script type="module" src="../js/admin/mayoristas.js"></script>
 </body>

@@ -1,4 +1,5 @@
 // js/guard.js
+// Guard liviano para páginas que NO usan auth.js directamente.
 
 export function getCurrentUser() {
   const raw = localStorage.getItem('currentUser')
@@ -8,7 +9,7 @@ export function getCurrentUser() {
 export function requireLogin() {
   const user = getCurrentUser()
   if (!user || !user.loggedIn) {
-    window.location.href = '/login.html'
+    redirectToLogin()
     return null
   }
   return user
@@ -26,7 +27,16 @@ export function requireAdmin() {
   return user
 }
 
+function redirectToLogin() {
+  // Si estamos en /admin, volver al login de raíz
+  if (window.location.pathname.includes('/admin/')) {
+    window.location.href = '../login.html'
+  } else {
+    window.location.href = '/login.html'
+  }
+}
+
 export function logout() {
   localStorage.removeItem('currentUser')
-  window.location.href = '/login.html'
+  redirectToLogin()
 }

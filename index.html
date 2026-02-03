@@ -973,11 +973,13 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script type="module" src="js/products.js"></script>
+
 <script>
         // Inicializar carrusel
         document.addEventListener('DOMContentLoaded', function() {
-            // Swiper carrusel
-            const swiper = new Swiper('.swiper', {
+            // Swiper carrusel: lo inicializa js/products.js (cuando ya hay slides reales)
+            /* const swiper = new Swiper('.swiper', {
                 slidesPerView: 1,
                 spaceBetween: 20,
                 navigation: {
@@ -993,7 +995,7 @@
                     1024: { slidesPerView: 3 },
                     1280: { slidesPerView: 4 }
                 }
-            });
+            }) */;
             
             // Control del menú móvil
             const mobileToggle = document.getElementById('mobileToggle');
@@ -1026,14 +1028,22 @@
                     if (loginBtn) loginBtn.style.display = 'none';
                     if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
                     
-                    // Mostrar admin
+                    // Mostrar panel solo para ADMIN / OPERADOR
                     if (adminLink) {
-                        adminLink.style.display = 'flex';
-                        adminLink.querySelector('span').textContent = user.rol;
+                        if (user.rol !== 'MAYORISTA') {
+                            adminLink.style.display = 'flex';
+                            adminLink.querySelector('span').textContent = user.rol;
+                        } else {
+                            adminLink.style.display = 'none';
+                        }
                     }
                     if (mobileAdminLink) {
-                        mobileAdminLink.style.display = 'flex';
-                        mobileAdminLink.querySelector('span').textContent = user.rol;
+                        if (user.rol !== 'MAYORISTA') {
+                            mobileAdminLink.style.display = 'flex';
+                            mobileAdminLink.querySelector('span').textContent = user.rol;
+                        } else {
+                            mobileAdminLink.style.display = 'none';
+                        }
                     }
                     
                     // Mostrar logout

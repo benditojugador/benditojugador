@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../css/styles.css" />
 </head>
-<body>
+<body class="admin-page">
 
   <!-- Header -->
   <header class="admin-header">
@@ -36,23 +36,36 @@
       <!-- Cargar producto -->
       <section id="sectionNuevoProducto" class="admin-section hidden">
         <h2>Cargar producto</h2>
-        <form id="productForm">
-          <input type="text" placeholder="Nombre del producto" />
-          <input type="text" placeholder="Categoría" />
-          <input type="text" placeholder="Equipo" />
-          <input type="text" placeholder="Tipo de ropa" />
-          <textarea placeholder="Descripción"></textarea>
+        <form id="productForm" class="admin-form">
+          <select name="oficial_alternativa" class="full">
+            <option value="Oficial">Oficial</option>
+            <option value="Alternativa">Alternativa</option>
+          </select>
 
-          <input type="text" placeholder="Imagen portada (URL)" />
-          <input type="text" placeholder="Imagen 1 (URL)" />
-          <input type="text" placeholder="Imagen 2 (URL)" />
+          <input name="año" type="number" placeholder="Año (opcional)" />
 
-          <label>
-            <input type="checkbox" />
+          <input name="equipo" type="text" placeholder="Equipo *" required />
+          <input name="tipo_ropa" type="text" placeholder="Tipo de ropa *" required />
+          <input name="tipo_equipo" type="text" placeholder="Tipo de equipo * (Nacional / Club / etc)" required />
+          <input name="nacionalidad" type="text" placeholder="Nacionalidad *" required />
+          <input name="deporte" type="text" placeholder="Deporte *" required />
+
+          <input name="etiquetas" class="full" type="text" placeholder="Etiquetas * (separadas por coma)" required />
+          <textarea name="descripcion" class="full" placeholder="Descripción (opcional)"></textarea>
+
+          <input name="portada" class="full" type="text" placeholder="Imagen portada (URL)" />
+          <input name="img1" type="text" placeholder="Imagen 1 (URL)" />
+          <input name="img2" type="text" placeholder="Imagen 2 (URL)" />
+          <input name="img3" type="text" placeholder="Imagen 3 (URL)" />
+          <input name="img4" type="text" placeholder="Imagen 4 (URL)" />
+          <input name="img5" type="text" placeholder="Imagen 5 (URL)" />
+
+          <label class="full" style="display:flex;align-items:center;gap:10px">
+            <input name="visible" type="checkbox" checked />
             Visible en catálogo
           </label>
 
-          <button type="submit" class="btn-primary">Guardar producto</button>
+          <button id="btnGuardarProducto" type="submit" class="btn-primary full">Guardar producto</button>
         </form>
       </section>
 
@@ -81,8 +94,36 @@
         <p>Listado y contacto de mayoristas</p>
       </section>
 
+    
+      <!-- Métricas (solo admin) -->
+      <section id="sectionMetricas" class="admin-section hidden">
+        <h2>Métricas</h2>
+        <p style="color:#94a3b8;margin-top:6px">Vistas, clicks a WhatsApp y actividad del equipo. Datos desde <strong>movimientos</strong>.</p>
+
+        <div class="admin-kpis" id="kpis">
+          <!-- JS -->
+        </div>
+
+        <h3 style="margin-top:16px">Últimos movimientos</h3>
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Acción</th>
+              <th>Usuario</th>
+              <th>Producto</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody id="movimientosTable"></tbody>
+        </table>
+      </section>
+
     </main>
-  </div>
-  <script type="module" src="../js/admin/productos.js"></script>
+  </div
+
+  <script type="module" src="../js/admin/dashboard.js"></script>
+  <script type="module" src="../js/admin/productos-dashboard.js"></script>
+  <script type="module" src="../js/admin/metricas.js"></script>
 </body>
 </html>

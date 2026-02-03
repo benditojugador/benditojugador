@@ -1,4 +1,5 @@
 import { supabase } from './auth.js'
+import { logMovimiento } from './logger.js'
 
 // WhatsApp del negocio (formato wa.me: sin +, sin espacios)
 const WHATSAPP_NUMBER = '5492645042317'
@@ -21,6 +22,8 @@ async function loadProductDetails() {
       .single()
 
     if (error) throw error
+    // Métrica: vista de producto
+    logMovimiento({ accion: 'producto_visto', producto_id: producto.id, detalle: { page: 'producto.html' } })
     updateProductUI(producto)
   } catch (error) {
     console.error('Error cargando detalles del producto:', error)
@@ -116,8 +119,19 @@ function updateProductUI(producto) {
   const whatsappBtn = document.getElementById('whatsappBtn')
   const footerWhatsapp = document.getElementById('footerWhatsapp')
 
-  if (whatsappBtn) whatsappBtn.href = whatsappUrl
-  if (footerWhatsapp) footerWhatsapp.href = whatsappUrl
+  if (whatsappBtn) {
+    whatsappBtn.href = whatsappUrl
+    whatsappBtn.addEventListener('click', () => {
+      // Métrica: click WhatsApp (no esperamos)
+      logMovimiento({ accion: 'click_whatsapp', producto_id: producto.id, detalle: { from: 'boton_detalle' } })
+    }, { once: true })
+  }
+  if (footerWhatsapp) {
+    footerWhatsapp.href = whatsappUrl
+    footerWhatsapp.addEventListener('click', () => {
+      logMovimiento({ accion: 'click_whatsapp', producto_id: producto.id, detalle: { from: 'footer' } })
+    }, { once: true })
+  }
 }
 
 function safeText(id, value) {

@@ -16,8 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const role = document.getElementById('role').value
 
     try {
-      await login(email, password, role)
-      window.location.href = 'admin/dashboard.html'
+      const u = await login(email, password, role)
+      if (u.rol === 'MAYORISTA') window.location.href = 'index.html'
+      else window.location.href = 'admin/dashboard.html'
     } catch (err) {
       msg.textContent = err.message || 'Error al iniciar sesión'
       msg.className = 'message error'
