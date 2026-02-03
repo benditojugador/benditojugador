@@ -1,70 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Bendito Jugador – Catálogo Deportivo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- CSS -->
+  <!-- CSS externo (si está bien, se aplica encima) -->
   <link rel="stylesheet" href="css/styles.css" />
 
-  <!-- Swiper -->
-  <link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"
-  />
+  <!-- Estilo base GARANTIZADO (aunque el CSS externo no cargue) -->
+  <style>
+    :root{
+      --bg:#f3f0e4;
+      --card:#ffffff;
+      --text:#1f2933;
+      --muted:#4b5563;
+      --brand:#9b1c1c;
+      --border:#e5e7eb;
+      --shadow: 0 10px 30px rgba(0,0,0,.08);
+      --radius:14px;
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html,body{height:100%}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+    a{color:inherit}
+    .container{max-width:1200px;margin:0 auto;padding:0 16px}
 
-  <!-- Icons -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-  />
+    header{background:#fff;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+    .head{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:64px}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .brand img{height:38px;width:auto;display:block}
+    .brand span{font-weight:800;letter-spacing:.2px}
+
+    nav{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+    nav a{font-weight:600;text-decoration:none;color:#374151;padding:8px 10px;border-radius:10px}
+    nav a:hover{background:#f2f2f2}
+    nav a.active{color:var(--brand);background:rgba(155,28,28,.08)}
+
+    .actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;font-weight:700;text-decoration:none;border:1px solid transparent;cursor:pointer}
+    .btn.outline{border-color:var(--brand);color:var(--brand);background:#fff}
+    .btn.primary{background:var(--brand);color:#fff}
+    .hidden{display:none !important}
+
+    .hero{padding:38px 0 18px}
+    .hero h1{font-size:34px;line-height:1.1;margin-bottom:10px}
+    .hero p{color:var(--muted)}
+
+    /* Grilla catálogo (si tu JS pinta cards, se ordenan) */
+    #productos{padding:18px 0 54px}
+    #productsCarousel{display:grid;grid-template-columns:1fr;gap:18px}
+    @media(min-width:640px){#productsCarousel{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:1024px){#productsCarousel{grid-template-columns:repeat(4,1fr)}}
+
+    /* Mensaje de estado */
+    .box{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;border:1px solid var(--border)}
+    .box h3{margin-bottom:6px}
+    .box p{color:var(--muted)}
+
+    footer{background:var(--brand);color:#fff;padding:24px 0}
+    .foot{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .wa{color:#fff;text-decoration:none;font-weight:800;border:1px solid rgba(255,255,255,.25);padding:10px 12px;border-radius:12px}
+    .wa:hover{background:rgba(255,255,255,.08)}
+  </style>
 </head>
 
 <body>
+  <!-- HEADER -->
+  <header>
+    <div class="container head">
+      <!-- Logo con fallback de rutas comunes -->
+      <a class="brand" href="index.html" aria-label="Bendito Jugador - Inicio">
+        <img src="assets/logo.png"
+             alt="Bendito Jugador"
+             onerror="this.onerror=null;this.src='assets/img/logo.png';">
+        <span>Bendito Jugador</span>
+      </a>
 
-  <!-- ================= HEADER / NAV ================= -->
-  <header class="main-header">
-    <div class="container header-content">
-
-      <div class="logo">
-        <img src="assets/logo.png" alt="Bendito Jugador" />
-      </div>
-
-      <nav class="main-nav">
-        <a href="index.html" class="active">
-          <i class="fas fa-home"></i> Inicio
-        </a>
-        <a href="#productos">
-          <i class="fas fa-shirt"></i> Productos
-        </a>
-        <a href="#categorias">
-          <i class="fas fa-tags"></i> Categorías
-        </a>
-        <a href="#contacto">
-          <i class="fas fa-phone"></i> Contacto
-        </a>
+      <!-- NAV simple y confiable -->
+      <nav aria-label="Navegación">
+        <a class="active" href="index.html">Inicio</a>
+        <a href="#productos">Productos</a>
+        <a href="#categorias">Categorías</a>
+        <a href="#contacto">Contacto</a>
       </nav>
 
-      <div class="nav-actions">
-        <!-- Estado sesión: JS decide mostrar -->
-        <a href="login.html" id="btnLogin" class="btn-outline">
-          Ingresar
-        </a>
-
-        <button id="btnLogout" class="btn-outline hidden">
-          Salir
-        </button>
-
-        <a href="admin/dashboard.html" id="btnDashboard" class="btn-primary hidden">
-          <i class="fas fa-gear"></i> Operar
-        </a>
+      <!-- Acciones -->
+      <div class="actions">
+        <a class="btn outline" href="login.html" id="btnLogin">Ingresar</a>
+        <button class="btn outline hidden" id="btnLogout" type="button">Salir</button>
+        <a class="btn primary hidden" href="admin/dashboard.html" id="btnDashboard">Operar</a>
       </div>
-
     </div>
   </header>
 
-  <!-- ================= HERO ================= -->
+  <!-- HERO -->
   <section class="hero">
     <div class="container">
       <h1>Productos Destacados</h1>
@@ -72,56 +102,47 @@
     </div>
   </section>
 
-  <!-- ================= CATÁLOGO ================= -->
-  <section class="catalogo" id="productos">
+  <!-- PRODUCTOS -->
+  <section id="productos">
     <div class="container">
-
-      <div class="swiper">
-        <div class="swiper-wrapper" id="productsCarousel">
-          <!-- products.js renderiza acá -->
+      <!-- Contenedor donde el JS pinta el catálogo -->
+      <div id="productsCarousel">
+        <!-- fallback si el JS no carga -->
+        <div class="box">
+          <h3>Cargando catálogo…</h3>
+          <p>Si esto se queda así, hay un problema con Supabase/JS. Pero la página ya no se rompe.</p>
         </div>
-
-        <!-- controles -->
-        <div class="swiper-button-prev"></div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-pagination"></div>
       </div>
-
     </div>
   </section>
 
-  <!-- ================= FOOTER ================= -->
-  <footer class="main-footer" id="contacto">
-    <div class="container footer-content">
+  <!-- CATEGORÍAS (placeholder estable) -->
+  <section id="categorias" style="padding:0 0 54px">
+    <div class="container">
+      <div class="box">
+        <h3>Categorías</h3>
+        <p>Esta sección queda lista para cuando activemos el módulo de categorías sin romper la home.</p>
+      </div>
+    </div>
+  </section>
 
-      <div class="footer-brand">
+  <!-- FOOTER / CONTACTO -->
+  <footer id="contacto">
+    <div class="container foot">
+      <div>
         <strong>Bendito Jugador</strong>
-        <p>Catálogo deportivo · Ventas mayoristas</p>
+        <div style="opacity:.9">Catálogo deportivo · Ventas mayoristas</div>
       </div>
 
-      <div class="footer-actions">
-        <a
-          href="https://wa.me/5492645454982"
-          target="_blank"
-          class="btn-whatsapp"
-        >
-          <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
-        </a>
-      </div>
-
+      <a class="wa" target="_blank" rel="noopener"
+         href="https://wa.me/5492645454982">
+        Consultar por WhatsApp
+      </a>
     </div>
   </footer>
 
-  <!-- ================= SCRIPTS ================= -->
-
-  <!-- Swiper -->
-  <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-
-  <!-- Auth (solo controla botones, no rompe si no hay sesión) -->
+  <!-- JS (por ahora quedan como estaban) -->
   <script type="module" src="js/auth.js"></script>
-
-  <!-- Catálogo -->
   <script type="module" src="js/products.js"></script>
-
 </body>
 </html>
