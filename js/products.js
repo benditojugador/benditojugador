@@ -1,149 +1,163 @@
-import { supabase } from './auth.js'
-
 /**
- * Catálogo (Home)
- * - Solo carga y renderiza productos visibles.
- * - NO registra métricas (eso se activa más adelante).
- * - Nunca debe romper el render si Supabase falla.
- * - Evita pedir imágenes “hotlink” que suelen dar 404 (Adidas/Nike).
+ * products.js
+ * Catálogo público – Bendito Jugador
+ *
+ * Responsabilidad ÚNICA:
+ * - Traer productos visibles desde Supabase
+ * - Renderizarlos en el catálogo
+ *
+ * NO hace:
+ * - login
+ * - métricas
+ * - roles
+ * - admin
+ *
+ * Si algo falla, muestra mensaje y NO rompe.
  */
 
-const wrapper = document.getElementById('productsCarousel')
+import { supabase } from './auth.js'
 
-function esc(str) {
-  return String(str ?? '')
+/* ===============================
+   CONFIGURACIÓN
+================================ */
+
+const CONTAINER_ID = 'productsCarousel'
+const PLACEHOLDER_IMG = 'assets/placeholder.png' // imagen local obligatoria
+
+/* ===============================
+   UTILIDADES
+================================ */
+
+function $(id) {
+  return document.getElementById(id)
+}
+
+function safe(text) {
+  return String(text ?? '')
     .replaceAll('&', '&amp;')
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;')
 }
 
-function isBlockedHotlink(url) {
-  if (!url) return false
-  try {
-    const u = new URL(url)
-    const host = u.hostname.toLowerCase()
-    return (
-      host.includes('assets.adidas.com') ||
-      host.includes('static.nike.com')
-    )
-  } catch {
-    // si no es URL válida, la dejamos pasar (puede ser relativa)
-    return false
-  }
+function buildTitle(p) {
+  // Ej: "Camiseta Boca Juniors 2024"
+  const parts = []
+  if (p.tipo_ropa) parts.push(p.tipo_ropa)
+  if (p.equipo) parts.push(p.equipo)
+  if (p.año) parts.push(p.año)
+  return parts.join(' ') || 'Producto'
 }
 
 function pickImage(p) {
-  const candidates = [p?.portada, p?.img1, p?.img2, p?.img3, p?.img4, p?.img5].filter(Boolean)
+  const imgs = [
+    p.portada,
+    p.img1,
+    p.img2,
+    p.img3,
+    p.img4,
+    p.img5
+  ].filter(Boolean)
 
-  for (const c of candidates) {
-    if (!isBlockedHotlink(c)) return c
-  }
-  return 'https://via.placeholder.com/800x520?text=Sin+Imagen'
+  return imgs[0] || PLACEHOLDER_IMG
 }
 
-function cardSlide(p) {
-  const title = `${p.equipo ?? ''} - ${p.tipo_ropa ?? ''}`.trim() || 'Producto'
-  const img = pickImage(p)
-  const desc = p.descripcion ?? ''
-  const badge = p.deporte ?? ''
+/* ===============================
+   RENDER
+================================ */
 
-  return `
-    <div class="swiper-slide">
-      <div class="product-card" data-id="${esc(p.id)}">
+function renderMessage(title, text) {
+  const container = $(CONTAINER_ID)
+  if (!container) return
+
+  container.innerHTML = `
+    <div class="catalog-message">
+      <h3>${safe(title)}</h3>
+      <p>${safe(text)}</p>
+    </div>
+  `
+}
+
+function renderProducts(products) {
+  const container = $(CONTAINER_ID)
+  if (!container) return
+
+  container.innerHTML = products.map(p => {
+    const title = buildTitle(p)
+    const img = pickImage(p)
+
+    return `
+      <div class="product-card">
         <div class="product-image">
-          <img
-            src="${esc(img)}"
-            alt="${esc(title)}"
+          <img 
+            src="${safe(img)}"
+            alt="${safe(title)}"
             loading="lazy"
-            onerror="this.onerror=null;this.src='https://via.placeholder.com/800x520?text=Sin+Imagen';"
+            onerror="this.onerror=null;this.src='${PLACEHOLDER_IMG}'"
           >
-          ${badge ? `<span class="product-badge">${esc(badge)}</span>` : ''}
         </div>
-        <div class="product-content">
-          <h3>${esc(title)}</h3>
-          <p>${esc(desc)}</p>
-          <a class="btn-product" href="producto.html?id=${esc(p.id)}">
-            Ver detalle <i class="fas fa-arrow-right"></i>
+
+        <div class="product-info">
+          <h3>${safe(title)}</h3>
+          <a href="producto.html?id=${p.id}" class="btn-detail">
+            Ver detalle →
           </a>
         </div>
       </div>
-    </div>
-  `
+    `
+  }).join('')
 }
 
-function initSwiper() {
-  if (typeof window === 'undefined') return
-  if (typeof Swiper === 'undefined') return
+/* ===============================
+   DATA
+================================ */
 
-  // eslint-disable-next-line no-undef
-  new Swiper('.swiper', {
-    slidesPerView: 1,
-    spaceBetween: 20,
-    navigation: {
-      nextEl: '.swiper-button-next',
-      prevEl: '.swiper-button-prev'
-    },
-    pagination: {
-      el: '.swiper-pagination',
-      clickable: true
-    },
-    breakpoints: {
-      640: { slidesPerView: 2 },
-      1024: { slidesPerView: 3 },
-      1280: { slidesPerView: 4 }
-    }
-  })
-}
+async function loadProducts() {
+  const container = $(CONTAINER_ID)
+  if (!container) return
 
-function renderMessage(title, message) {
-  if (!wrapper) return
-  wrapper.innerHTML = `
-    <div class="swiper-slide">
-      <div class="product-card">
-        <div class="product-content">
-          <h3>${esc(title)}</h3>
-          <p>${esc(message)}</p>
-        </div>
-      </div>
-    </div>
-  `
-}
-
-async function loadCatalogo() {
-  if (!wrapper) return
-
-  renderMessage('Cargando productos…', 'Un segundo, que estamos trayendo lo bueno.')
+  renderMessage('Cargando productos…', 'Un momento por favor')
 
   const { data, error } = await supabase
     .from('productos_deportivos')
-    .select('id, equipo, tipo_ropa, deporte, descripcion, portada, img1, img2, img3, img4, img5, visible, created_at')
+    .select(`
+      id,
+      equipo,
+      tipo_ropa,
+      año,
+      descripcion,
+      portada,
+      img1,
+      img2,
+      img3,
+      img4,
+      img5,
+      visible,
+      created_at
+    `)
     .eq('visible', true)
     .order('created_at', { ascending: false })
-    .limit(24)
 
   if (error) {
     renderMessage(
-      'No pudimos cargar el catálogo',
-      'Revisá Supabase (RLS / columna visible) y recargá.'
+      'No se pudo cargar el catálogo',
+      'Revisá la conexión con Supabase o las políticas de acceso'
     )
     return
   }
 
-  const items = Array.isArray(data) ? data : []
-
-  if (items.length === 0) {
+  if (!data || data.length === 0) {
     renderMessage(
-      'Sin productos por ahora',
-      'Cuando cargues productos visibles desde el dashboard, aparecen acá.'
+      'Sin productos',
+      'Todavía no hay productos visibles en el catálogo'
     )
-    initSwiper()
     return
   }
 
-  wrapper.innerHTML = items.map(cardSlide).join('')
-  initSwiper()
+  renderProducts(data)
 }
 
-document.addEventListener('DOMContentLoaded', loadCatalogo)
+/* ===============================
+   INIT
+================================ */
+
+document.addEventListener('DOMContentLoaded', loadProducts)
