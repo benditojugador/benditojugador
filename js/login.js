@@ -4,17 +4,23 @@ const errorP = document.getElementById("error");
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const nombre = document.getElementById("nombre").value;
+  const contra = document.getElementById("password").value;
 
-  const { error } = await supabaseClient.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { data, error } = await supabaseClient
+    .from("usuario")
+    .select("*")
+    .eq("nombre", nombre)
+    .eq("contra", contra)
+    .single();
 
-  if (error) {
-    errorP.textContent = error.message;
-  } else {
-    window.location.href = "dashboard.html";
+  if (error || !data) {
+    errorP.textContent = "Usuario o contraseña incorrectos";
+    return;
   }
+
+  // guardar sesión simple
+  localStorage.setItem("usuario", JSON.stringify(data));
+
+  window.location.href = "dashboard.html";
 });
