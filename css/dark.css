@@ -1,0 +1,39 @@
+:root {
+  --bg-main: #0e0e0e;
+  --bg-secondary: #161616;
+  --card-bg: #1f1f1f;
+  --text-main: #eaeaea;
+  --accent: #25D366;
+}
+
+body {
+  background: var(--bg-main);
+  color: var(--text-main);
+}
+
+header, nav {
+  background: var(--bg-secondary);
+}
+
+a {
+  color: var(--text-main);
+}
+
+input {
+  background: #222;
+  color: var(--text-main);
+  border: 1px solid #333;
+}
+
+.wtsp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 10px 20px rgba(0,0,0,.4);
+  z-index: 9999;
+}

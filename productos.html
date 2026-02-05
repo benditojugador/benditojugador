@@ -2,28 +2,33 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Bendito Jugador</title>
+  <title>Productos</title>
+
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/dark.css">
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
 <header>
-  <h1>Bendito Jugador</h1>
+  <h2>Productos</h2>
   <nav>
     <a href="index.html">Inicio</a>
-    <a href="productos.html">Productos</a>
   </nav>
 </header>
 
-<main>
-  <h2>Catálogo Gamer</h2>
-  <p>Indumentaria oficial y retro.</p>
-</main>
+<section class="buscador">
+  <input type="text" id="searchInput" placeholder="Buscar por equipo...">
+</section>
+
+<section class="grid-productos" id="productosGrid"></section>
 
 <a href="https://wa.me/5492645042317" class="wtsp-float" target="_blank">
   <span>💬 2645042317</span>
 </a>
 
+<script src="js/supabase.js"></script>
+<script src="js/productos.js"></script>
 </body>
 </html>
