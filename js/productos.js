@@ -10,7 +10,7 @@ async function cargarProductos() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error("Error cargando productos:", error);
+    console.error("Supabase error:", error);
     return;
   }
 
@@ -21,28 +21,21 @@ async function cargarProductos() {
 function renderProductos(lista) {
   grid.innerHTML = "";
 
-  if (lista.length === 0) {
-    grid.innerHTML = "<p>No hay productos</p>";
-    return;
-  }
-
   lista.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "producto";
+    const div = document.createElement("div");
+    div.className = "producto";
 
-    card.innerHTML = `
-      <img src="${p.img_portada}" alt="${p.nombre}">
-      <div class="producto-info">
-        <h4>${p.equipo}</h4>
-        <span>${p.anio}</span>
-      </div>
+    div.innerHTML = `
+      <a href="producto.html?id=${p.id}">
+        <img 
+          src="${p.img_portada}" 
+          alt="${p.nombre}"
+          onerror="this.src='https://via.placeholder.com/400x600?text=Sin+imagen'"
+        >
+      </a>
     `;
 
-    card.onclick = () => {
-      window.location.href = `producto.html?id=${p.id}`;
-    };
-
-    grid.appendChild(card);
+    grid.appendChild(div);
   });
 }
 

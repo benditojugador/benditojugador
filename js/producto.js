@@ -13,7 +13,7 @@ async function cargarProducto() {
     .single();
 
   if (error) {
-    console.error("Error:", error);
+    console.error(error);
     return;
   }
 
@@ -28,9 +28,18 @@ async function cargarProducto() {
   ].filter(Boolean);
 
   imgs.forEach(src => {
+    const a = document.createElement("a");
+    a.href = src;
+    a.target = "_blank";
+
     const img = document.createElement("img");
     img.src = src;
-    galeria.appendChild(img);
+    img.onerror = () => {
+      img.src = "https://via.placeholder.com/400x600?text=Sin+imagen";
+    };
+
+    a.appendChild(img);
+    galeria.appendChild(a);
   });
 }
 
