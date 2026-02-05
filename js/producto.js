@@ -6,14 +6,14 @@ const info = document.getElementById("info");
 const galeria = document.getElementById("galeria");
 
 async function cargarProducto() {
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("productos")
     .select("*")
     .eq("id", id)
     .single();
 
   if (error) {
-    console.error(error);
+    console.error("Error Supabase:", error);
     return;
   }
 
