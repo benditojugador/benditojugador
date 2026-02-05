@@ -13,12 +13,12 @@ async function cargarProducto() {
     .single();
 
   if (error) {
-    console.error(error);
+    console.error("Error:", error);
     return;
   }
 
-  nombre.innerText = data.nombre;
-  info.innerText = `${data.equipo} · ${data.anio} · ${data.tipo_prenda}`;
+  nombre.textContent = data.nombre;
+  info.textContent = `${data.equipo} · ${data.anio} · ${data.tipo_prenda}`;
 
   const imgs = [
     data.img_portada,

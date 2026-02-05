@@ -1,5 +1,6 @@
 const grid = document.getElementById("productosGrid");
 const searchInput = document.getElementById("searchInput");
+
 let productos = [];
 
 async function cargarProductos() {
@@ -9,7 +10,7 @@ async function cargarProductos() {
     .order("created_at", { ascending: false });
 
   if (error) {
-    console.error(error);
+    console.error("Error cargando productos:", error);
     return;
   }
 
@@ -20,28 +21,36 @@ async function cargarProductos() {
 function renderProductos(lista) {
   grid.innerHTML = "";
 
+  if (lista.length === 0) {
+    grid.innerHTML = "<p>No hay productos</p>";
+    return;
+  }
+
   lista.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "producto";
-    div.innerHTML = `
+    const card = document.createElement("div");
+    card.className = "producto";
+
+    card.innerHTML = `
       <img src="${p.img_portada}" alt="${p.nombre}">
+      <div class="producto-info">
+        <h4>${p.equipo}</h4>
+        <span>${p.anio}</span>
+      </div>
     `;
 
-    div.onclick = () => {
+    card.onclick = () => {
       window.location.href = `producto.html?id=${p.id}`;
     };
 
-    grid.appendChild(div);
+    grid.appendChild(card);
   });
 }
 
 searchInput.addEventListener("input", () => {
   const value = searchInput.value.toLowerCase();
-
   const filtrados = productos.filter(p =>
     p.equipo.toLowerCase().includes(value)
   );
-
   renderProductos(filtrados);
 });
 
