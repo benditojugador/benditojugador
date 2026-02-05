@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Nuevo Producto</title>
+</head>
+<body>
+
+<h2>Agregar Producto</h2>
+
+<form id="productoForm">
+  <input placeholder="Nombre" id="nombre" required>
+  <input placeholder="Equipo" id="equipo" required>
+  <input placeholder="Año" id="anio">
+  <input placeholder="Tipo prenda" id="tipo_prenda">
+
+  <input placeholder="Imagen portada URL" id="img_portada">
+  <input placeholder="Imagen 2 URL" id="img_2">
+  <input placeholder="Imagen 3 URL" id="img_3">
+  <input placeholder="Imagen 4 URL" id="img_4">
+
+  <button type="submit">Guardar</button>
+</form>
+
+<p id="msg"></p>
+
+<script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
+<script src="js/nuevo-producto.js"></script>
+
+</body>
+</html>
