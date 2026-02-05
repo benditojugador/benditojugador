@@ -1,16 +1,17 @@
 const logoutBtn = document.getElementById("logout");
 
-async function checkUser() {
-  const { data } = await supabaseClient.auth.getUser();
+// ====== CHECK DE SESIÓN MANUAL ======
+const usuario = JSON.parse(localStorage.getItem("usuario"));
 
-  if (!data.user) {
-    window.location.href = "login.html";
-  }
+if (!usuario) {
+  window.location.href = "login.html";
 }
 
-logoutBtn.addEventListener("click", async () => {
-  await supabaseClient.auth.signOut();
+// ejemplo: mostrar rol
+console.log("Rol:", usuario.rol);
+
+// ====== LOGOUT ======
+logoutBtn.addEventListener("click", () => {
+  localStorage.removeItem("usuario");
   window.location.href = "index.html";
 });
-
-checkUser();
