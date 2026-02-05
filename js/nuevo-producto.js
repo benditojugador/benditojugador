@@ -26,3 +26,17 @@ form.addEventListener("submit", async (e) => {
     form.reset();
   }
 });
+
+const producto = {
+  nombre: nombre.value,
+  anio: anio.value,
+  tipo_equipo: tipo_equipo.value, // 👈 ESTO
+  equipo: equipo.value,
+  tipo_prenda: tipo_prenda.value,
+  nacionalidad: nacionalidad.value,
+  etiquetas: etiquetas.value,
+  img_portada: img_portada.value,
+  img_2: img_2.value,
+  img_3: img_3.value,
+  img_4: img_4.value
+};
